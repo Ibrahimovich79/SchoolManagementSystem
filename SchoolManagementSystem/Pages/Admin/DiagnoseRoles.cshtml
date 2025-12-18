@@ -1,0 +1,52 @@
+@page
+@model SchoolManagementSystem.Pages.Admin.DiagnoseRolesModel
+@{
+    ViewData["Title"] = "Diagnose Roles";
+}
+
+<h1>Role Diagnosis</h1>
+
+<div class="card mb-4">
+    <div class="card-header">Current User Status</div>
+    <div class="card-body">
+        <p><strong>Is Authenticated:</strong> @User.Identity.IsAuthenticated</p>
+        <p><strong>Name:</strong> @User.Identity.Name</p>
+        <p><strong>Is Admin Role:</strong> @User.IsInRole("Admin")</p>
+        <p><strong>Claims:</strong></p>
+        <ul>
+            @foreach (var claim in User.Claims)
+            {
+                <li>@claim.Type : @claim.Value</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">Target User Analysis (admin@school.com)</div>
+    <div class="card-body">
+        @if (Model.TargetUser != null)
+        {
+            <p><strong>Found User ID:</strong> @Model.TargetUser.Id</p>
+            <p><strong>Email:</strong> @Model.TargetUser.Email</p>
+            <p><strong>Normalized Email:</strong> @Model.TargetUser.NormalizedEmail</p>
+            <p><strong>Roles:</strong> @string.Join(", ", Model.TargetUserRoles)</p>
+        }
+        else
+        {
+            <div class="alert alert-danger">User 'admin@school.com' NOT FOUND in database.</div>
+        }
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">All Available Roles</div>
+    <div class="card-body">
+        <ul>
+            @foreach (var role in Model.AllRoles)
+            {
+                <li>@role.Name (@role.Id)</li>
+            }
+        </ul>
+    </div>
+</div>

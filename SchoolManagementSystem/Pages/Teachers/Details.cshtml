@@ -1,0 +1,133 @@
+@page "{id:long}"
+@model SchoolManagementSystem.Pages.Teachers.DetailsModel
+@{
+    ViewData["Title"] = "Teacher Details";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Teacher Details</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-page="/Teachers">Teachers</a></li>
+        <li class="breadcrumb-item active">Details</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-chalkboard-teacher me-1"></i>
+            Teacher Information
+        </div>
+        <div class="card-body">
+            @Html.AntiForgeryToken()
+            @if (Model.Teacher == null)
+            {
+                <div class="alert alert-danger">Teacher not found.</div>
+            }
+            else
+            {
+                 <input type="hidden" id="page-handler-url" value="?handler=UpdateField" />
+                <dl class="row">
+                    <!-- ID (Read-only) -->
+                    <dt class="col-sm-3">Teacher ID</dt>
+                    <dd class="col-sm-9">
+                         <div id="view-TeachId" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Teacher.TeachId</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('TeachId')"></i>
+                            }
+                        </div>
+                        <div id="edit-TeachId" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Teacher.TeachId" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Teacher.TeachId', 'TeachId', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('TeachId')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Name (Editable) -->
+                    <dt class="col-sm-3">Teacher Name</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-TeachName" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Teacher.TeachName</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('TeachName')"></i>
+                            }
+                        </div>
+                        <div id="edit-TeachName" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Teacher.TeachName" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Teacher.TeachId', 'TeachName', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('TeachName')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Mobile (Editable) -->
+                    <dt class="col-sm-3">Mobile</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-TeachMobile" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Teacher.TeachMobile</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('TeachMobile')"></i>
+                            }
+                        </div>
+                        <div id="edit-TeachMobile" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Teacher.TeachMobile" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Teacher.TeachId', 'TeachMobile', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('TeachMobile')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- StaffId (Editable) -->
+                    <dt class="col-sm-3">Staff ID</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-StaffId" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Teacher.StaffId</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StaffId')"></i>
+                            }
+                        </div>
+                        <div id="edit-StaffId" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Teacher.StaffId" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Teacher.TeachId', 'StaffId', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StaffId')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- CourseId (Editable) -->
+                    <dt class="col-sm-3">Course ID</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-CousreId" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Teacher.CousreId</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('CousreId')"></i>
+                            }
+                        </div>
+                        <div id="edit-CousreId" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Teacher.CousreId" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Teacher.TeachId', 'CousreId', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('CousreId')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Add Course Name if navigation property exists -->
+                   @if (Model.Teacher.Cousre != null) {
+                        <dt class="col-sm-3">Course Name</dt>
+                        <dd class="col-sm-9">@Model.Teacher.Cousre.CourseName</dd> 
+                   }
+                </dl>
+                <div class="mt-3">
+                    <a asp-page="/Teachers" class="btn btn-secondary">Back to List</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

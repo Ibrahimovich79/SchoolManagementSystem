@@ -1,0 +1,293 @@
+@page "{id:long}"
+@model SchoolManagementSystem.Pages.Students.DetailsModel
+@{
+    ViewData["Title"] = "Student Details";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Student Details</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-page="/Students">Students</a></li>
+        <li class="breadcrumb-item active">Details</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user-graduate me-1"></i>
+            Student Information
+        </div>
+        <div class="card-body">
+            @Html.AntiForgeryToken()
+            @if (Model.Student == null)
+            {
+                <div class="alert alert-danger">Student not found.</div>
+            }
+            else
+            {
+                <input type="hidden" id="page-handler-url" value="?handler=UpdateField" />
+                <dl class="row">
+                    <!-- ID (Read-only) -->
+                    <dt class="col-sm-3">Student ID</dt>
+                    <dd class="col-sm-9">@Model.Student.Qid</dd>
+
+                    <!-- Name (Editable) -->
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-StdName" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.StdName</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdName')"></i>
+                            }
+                        </div>
+                        <div id="edit-StdName" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.StdName" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'StdName', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StdName')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Grade (Editable) -->
+                    <dt class="col-sm-3">Grade</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-StdGrade" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.StdGrade</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdGrade')"></i>
+                            }
+                        </div>
+                        <div id="edit-StdGrade" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.StdGrade" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'StdGrade', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StdGrade')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Classroom (Editable) -->
+                    <dt class="col-sm-3">Classroom</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-ClassRoom" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.ClassRoom</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('ClassRoom')"></i>
+                            }
+                        </div>
+                        <div id="edit-ClassRoom" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.ClassRoom" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'ClassRoom', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('ClassRoom')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Mobile (Editable) -->
+                    <dt class="col-sm-3">Mobile</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-StdMobile" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.StdMobile</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdMobile')"></i>
+                            }
+                        </div>
+                        <div id="edit-StdMobile" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Student.StdMobile" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'StdMobile', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StdMobile')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Mobile 2 (Editable) -->
+                    <dt class="col-sm-3">Mobile 2</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-Mobile2" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.Mobile2</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Mobile2')"></i>
+                            }
+                        </div>
+                        <div id="edit-Mobile2" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Student.Mobile2" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'Mobile2', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('Mobile2')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Nationality (Editable) -->
+                    <dt class="col-sm-3">Nationality</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-StdNationality" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.StdNationality</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdNationality')"></i>
+                            }
+                        </div>
+                        <div id="edit-StdNationality" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.StdNationality" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'StdNationality', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StdNationality')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Transport (Editable) -->
+                    <dt class="col-sm-3">Transport</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-Transport" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.Transport</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Transport')"></i>
+                            }
+                        </div>
+                        <div id="edit-Transport" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.Transport" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'Transport', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('Transport')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+                    
+                    <!-- BusNo (Editable) -->
+                    <dt class="col-sm-3">Bus Number</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-BusNo" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.BusNo</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('BusNo')"></i>
+                            }
+                        </div>
+                        <div id="edit-BusNo" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Student.BusNo" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'BusNo', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('BusNo')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- Note (Editable) -->
+                    <dt class="col-sm-3">Notes</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-Note" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.Note</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Note')"></i>
+                            }
+                        </div>
+                        <div id="edit-Note" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.Note" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'Note', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('Note')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- OldBranche (Editable) -->
+                    <dt class="col-sm-3">Old Branch</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-OldBranche" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.OldBranche</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('OldBranche')"></i>
+                            }
+                        </div>
+                        <div id="edit-OldBranche" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.OldBranche" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'OldBranche', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('OldBranche')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- OldSchool (Editable) -->
+                    <dt class="col-sm-3">Old School</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-OldSchool" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.OldSchool</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('OldSchool')"></i>
+                            }
+                        </div>
+                        <div id="edit-OldSchool" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.OldSchool" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'OldSchool', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('OldSchool')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+                    
+                    <!-- StdSeat (Editable) -->
+                    <dt class="col-sm-3">Seat Number</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-StdSeat" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.StdSeat</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdSeat')"></i>
+                            }
+                        </div>
+                        <div id="edit-StdSeat" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Student.StdSeat" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'StdSeat', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StdSeat')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+                    
+                    <!-- StdCode (Editable) -->
+                    <dt class="col-sm-3">Student Code</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-StdCode" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.StdCode</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdCode')"></i>
+                            }
+                        </div>
+                        <div id="edit-StdCode" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="form-control form-control-sm me-2" value="@Model.Student.StdCode" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'StdCode', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StdCode')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+
+                    <!-- UserName (Editable) -->
+                     <dt class="col-sm-3">Username</dt>
+                    <dd class="col-sm-9">
+                        <div id="view-UserName" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.UserName</span>
+                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('UserName')"></i>
+                            }
+                        </div>
+                        <div id="edit-UserName" style="display:none;">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.UserName" />
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'UserName', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('UserName')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </dd>
+                </dl>
+                <div class="mt-3">
+                    <a asp-page="/Students" class="btn btn-secondary">Back to List</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

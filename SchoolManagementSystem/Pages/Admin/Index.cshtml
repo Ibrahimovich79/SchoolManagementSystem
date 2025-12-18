@@ -1,0 +1,44 @@
+﻿@page
+@model SchoolManagementSystem.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="card border-primary">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="bi bi-speedometer2"></i> Admin Dashboard</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Welcome, Admin!</h5>
+            <p class="card-text">Manage your school system here.</p>
+
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card text-center mb-3">
+                        <div class="card-body">
+                            <h5>Manage Students</h5>
+                            <a href="/Students" class="btn btn-outline-primary">View Students</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center mb-3">
+                        <div class="card-body">
+                            <h5>Manage Teachers</h5>
+                            <a href="/Teachers" class="btn btn-outline-primary">View Teachers</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center mb-3">
+                        <div class="card-body">
+                            <h5>Manage Users</h5>
+                            <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary">View Users</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
