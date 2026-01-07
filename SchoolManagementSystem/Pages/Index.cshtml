@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Dashboard";
 }
 
 <div class="container-fluid px-4">
@@ -9,54 +9,88 @@
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item active">Dashboard</li>
     </ol>
+
     <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">Total Students</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="h3">@Model.StartStudentCount</span>
-                    <a class="small text-white stretched-link" asp-page="/Students">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Total Teachers</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="h3">@Model.TeacherCount</span>
-                    <a class="small text-white stretched-link" asp-page="/Teachers">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">Active Classes</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="h3">@Model.ClassCount</span>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-danger text-white mb-4">
-                <div class="card-body">Attendance (Today)</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="h3">--%</span>
-                    <div class="small text-white">Not Implemented</div>
-                </div>
-            </div>
-        </div>
-        @if (User.IsInRole("Admin"))
+        @if (Model.IsTeacher)
         {
+            @if (Model.TeacherClasses.Any())
+            {
+                @foreach (var classItem in Model.TeacherClasses)
+                {
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <h5>@classItem.GradeName</h5>
+                                <div class="small">@classItem.StudentCount Students</div>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" asp-page="/Teachers/ClassDetails" asp-route-gradeId="@classItem.GradeId">View Student List</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        You have no assigned classes at the moment.
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Admin / Supervisor View -->
             <div class="col-xl-3 col-md-6">
-                <div class="card bg-info text-white mb-4">
-                    <div class="card-body">User Management</div>
+                <div class="card bg-primary text-white mb-4">
+                    <div class="card-body">Total Students</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <span class="small text-white">Manage System Users</span>
-                        <a class="small text-white stretched-link" asp-page="/Admin/Users/Index">View Details</a>
+                        <span class="h3">@Model.StartStudentCount</span>
+                        <a class="small text-white stretched-link" asp-page="/Students">View Details</a>
                     </div>
                 </div>
             </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-warning text-white mb-4">
+                    <div class="card-body">Total Teachers</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <span class="h3">@Model.TeacherCount</span>
+                        <a class="small text-white stretched-link" asp-page="/Teachers">View Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">Active Classes</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <span class="h3">@Model.ClassCount</span>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-danger text-white mb-4">
+                    <div class="card-body">Attendance (Today)</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <span class="h3">--%</span>
+                        <div class="small text-white">Not Implemented</div>
+                    </div>
+                </div>
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-info text-white mb-4">
+                        <div class="card-body">User Management</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <span class="small text-white">Manage System Users</span>
+                            <a class="small text-white stretched-link" asp-page="/Admin/Users/Index">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     </div>
 </div>

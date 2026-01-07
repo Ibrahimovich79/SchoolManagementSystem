@@ -41,7 +41,7 @@
                             @foreach (var role in Model.AllRoles)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="Input.SelectedRoles" value="@role" 
+                                    <input class="form-check-input role-checkbox" type="checkbox" name="Input.SelectedRoles" value="@role" 
                                            id="role_@role" 
                                            @(Model.Input.SelectedRoles.Contains(role) ? "checked" : "")>
                                     <label class="form-check-label" for="role_@role">
@@ -51,6 +51,22 @@
                             }
                         </div>
                     </div>
+                </div>
+
+                <div class="mb-3" id="teacherSelectDiv" style="display:none;">
+                    <label asp-for="Input.TeacherId" class="form-label">Select Teacher (Link)</label>
+                    <select asp-for="Input.TeacherId" asp-items="@ViewBag.Teachers" class="form-select">
+                        <option value="">-- No Link --</option>
+                    </select>
+                    <div class="form-text">Assign a teacher record to this user.</div>
+                </div>
+
+                <div class="mb-3" id="studentSelectDiv" style="display:none;">
+                    <label asp-for="Input.StudentId" class="form-label">Select Student (Link)</label>
+                    <select asp-for="Input.StudentId" asp-items="@ViewBag.Students" class="form-select">
+                        <option value="">-- No Link --</option>
+                    </select>
+                    <div class="form-text">Assign a student record to this user.</div>
                 </div>
 
                 <div class="mt-4 mb-0">
@@ -66,4 +82,39 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var teacherDiv = document.getElementById("teacherSelectDiv");
+            var studentDiv = document.getElementById("studentSelectDiv");
+            var checkboxes = document.querySelectorAll(".role-checkbox");
+
+            function updateVisibility() {
+                var isTeacherOrSupervisor = false;
+                var isStudent = false;
+
+                checkboxes.forEach(function (cb) {
+                    if (cb.checked) {
+                        if (cb.value === "Teacher" || cb.value === "Supervisor") {
+                            isTeacherOrSupervisor = true;
+                        }
+                        if (cb.value === "Student") {
+                            isStudent = true;
+                        }
+                    }
+                });
+
+                teacherDiv.style.display = isTeacherOrSupervisor ? "block" : "none";
+                studentDiv.style.display = isStudent ? "block" : "none";
+            }
+
+            // Initial check
+            updateVisibility();
+
+            // Listen for changes
+            checkboxes.forEach(function (cb) {
+                cb.addEventListener("change", updateVisibility);
+            });
+        });
+    </script>
 }

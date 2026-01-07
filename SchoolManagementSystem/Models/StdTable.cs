@@ -20,17 +20,18 @@ public partial class StdTable
     [StringLength(255)]
     public string? OldBranche { get; set; }
 
+    [StringLength(450)]
+    public string? UserId { get; set; }
+
+    [Column("GradeID")]
     [StringLength(255)]
-    public string? StdGrade { get; set; }
+    public string? GradeId { get; set; }
 
     [StringLength(255)]
     public string? StdNationality { get; set; }
 
     [Column("SMS")]
     public int? Sms { get; set; }
-
-    [StringLength(255)]
-    public string? Transport { get; set; }
 
     public int? BusNo { get; set; }
 
@@ -53,9 +54,6 @@ public partial class StdTable
 
     public int StdCode { get; set; }
 
-    [StringLength(255)]
-    public string? ClassRoom { get; set; }
-
     [Column("SSMA_TimeStamp")]
     public byte[] SsmaTimeStamp { get; set; } = null!;
 
@@ -73,7 +71,7 @@ public partial class StdTable
     [InverseProperty("StdTables")]
     public virtual Committee? StdComNoNavigation { get; set; }
 
-    [ForeignKey("StdGrade")]
+    [ForeignKey("GradeId")]
     [InverseProperty("StdTables")]
     public virtual GradeTable? StdGradeNavigation { get; set; }
 }

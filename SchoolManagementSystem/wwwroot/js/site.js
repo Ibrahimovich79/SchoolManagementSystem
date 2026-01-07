@@ -20,7 +20,8 @@ window.cancelEdit = function (fieldName) {
 }
 
 window.saveField = async function (id, fieldName, handlerUrl) {
-    const inputElement = document.querySelector(`#edit-${fieldName} input`);
+    const container = document.getElementById('edit-' + fieldName);
+    const inputElement = container.querySelector('input') || container.querySelector('select');
     const newValue = inputElement.value;
     const antiforgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
 

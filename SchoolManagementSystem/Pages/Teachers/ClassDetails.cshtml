@@ -1,0 +1,62 @@
+@page
+@model SchoolManagementSystem.Pages.Teachers.ClassDetailsModel
+@{
+    ViewData["Title"] = "Class Details";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">@Model.ClassName</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Class Details</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Student List
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Student ID (QID)</th>
+                        <th>Student Name</th>
+                        <th>Transport</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Students.Any())
+                    {
+                        @foreach (var student in Model.Students)
+                        {
+                            <tr>
+                                <td>@student.StudentId</td>
+                                <td>@student.Name</td>
+                                <td>
+                                    @if(student.TransportType == "Bus")
+                                    {
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-bus"></i> Bus (@student.BusNo)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary"><i class="fas fa-car"></i> Car</span>
+                                    }
+                                </td>
+                                <td>@student.Note</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No students found in this class.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

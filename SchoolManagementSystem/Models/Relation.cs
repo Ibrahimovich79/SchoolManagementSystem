@@ -15,13 +15,14 @@ public partial class Relation
     [Column("ID")]
     public int Id { get; set; }
 
+    [Column("GradeID")]
     [StringLength(255)]
-    public string Grade { get; set; } = null!;
+    public string? GradeId { get; set; }
 
     [Column("TeachID")]
     public long? TeachId { get; set; }
 
-    [ForeignKey("Grade")]
+    [ForeignKey("GradeId")]
     [InverseProperty("Relations")]
     public virtual GradeTable GradeNavigation { get; set; } = null!;
 

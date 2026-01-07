@@ -53,47 +53,32 @@
                     <!-- Grade (Editable) -->
                     <dt class="col-sm-3">Grade</dt>
                     <dd class="col-sm-9">
-                        <div id="view-StdGrade" class="d-flex align-items-center">
-                            <span class="me-2">@Model.Student.StdGrade</span>
+                        <div id="view-GradeId" class="d-flex align-items-center">
+                            <span class="me-2">@Model.Student.StdGradeNavigation?.GradeName</span>
                             @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
-                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdGrade')"></i>
+                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('GradeId')"></i>
                             }
                         </div>
-                        <div id="edit-StdGrade" style="display:none;">
+                        <div id="edit-GradeId" style="display:none;">
                             <div class="d-flex align-items-center">
-                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.StdGrade" />
-                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'StdGrade', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('StdGrade')"><i class="fas fa-times"></i></button>
+                                <select class="form-select form-select-sm me-2" asp-items="ViewBag.GradeId" id="input-GradeId" onchange="updateInputValue('GradeId')">
+                                    <option value="">-- Select Grade --</option>
+                                    @if(!string.IsNullOrEmpty(Model.Student.GradeId)) { <option value="@Model.Student.GradeId" selected>@Model.Student.StdGradeNavigation?.GradeName</option> } 
+                                    <!-- Note: asp-items handles selection if bound correctly, but for manual JS edit we might need care. The ViewBag SelectList should handle 'Selected' if we constructed it with the selected value, which we didn't in OnGet. So let's rely on manual value setting or trust render. Actually, constructing SelectList(items, value, text, selectedValue) in OnGet is better. -->
+                                </select>
+                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'GradeId', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('GradeId')"><i class="fas fa-times"></i></button>
                             </div>
                         </div>
                     </dd>
 
-                    <!-- Classroom (Editable) -->
-                    <dt class="col-sm-3">Classroom</dt>
-                    <dd class="col-sm-9">
-                        <div id="view-ClassRoom" class="d-flex align-items-center">
-                            <span class="me-2">@Model.Student.ClassRoom</span>
-                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
-                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('ClassRoom')"></i>
-                            }
-                        </div>
-                        <div id="edit-ClassRoom" style="display:none;">
-                            <div class="d-flex align-items-center">
-                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.ClassRoom" />
-                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'ClassRoom', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('ClassRoom')"><i class="fas fa-times"></i></button>
-                            </div>
-                        </div>
-                    </dd>
-
-                    <!-- Mobile (Editable) -->
+                    <!-- Mobile (Restricted) -->
+                    @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
                     <dt class="col-sm-3">Mobile</dt>
                     <dd class="col-sm-9">
                         <div id="view-StdMobile" class="d-flex align-items-center">
                             <span class="me-2">@Model.Student.StdMobile</span>
-                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
-                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdMobile')"></i>
-                            }
+                            <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdMobile')"></i>
                         </div>
                         <div id="edit-StdMobile" style="display:none;">
                             <div class="d-flex align-items-center">
@@ -103,15 +88,15 @@
                             </div>
                         </div>
                     </dd>
-
-                    <!-- Mobile 2 (Editable) -->
+                    }
+ 
+                    <!-- Mobile 2 (Restricted) -->
+                    @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
                     <dt class="col-sm-3">Mobile 2</dt>
                     <dd class="col-sm-9">
                         <div id="view-Mobile2" class="d-flex align-items-center">
                             <span class="me-2">@Model.Student.Mobile2</span>
-                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
-                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Mobile2')"></i>
-                            }
+                            <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Mobile2')"></i>
                         </div>
                         <div id="edit-Mobile2" style="display:none;">
                             <div class="d-flex align-items-center">
@@ -121,15 +106,15 @@
                             </div>
                         </div>
                     </dd>
+                    }
 
-                    <!-- Nationality (Editable) -->
+                    <!-- Nationality (Restricted) -->
+                     @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
                     <dt class="col-sm-3">Nationality</dt>
                     <dd class="col-sm-9">
                         <div id="view-StdNationality" class="d-flex align-items-center">
                             <span class="me-2">@Model.Student.StdNationality</span>
-                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
-                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdNationality')"></i>
-                            }
+                            <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('StdNationality')"></i>
                         </div>
                         <div id="edit-StdNationality" style="display:none;">
                             <div class="d-flex align-items-center">
@@ -139,22 +124,15 @@
                             </div>
                         </div>
                     </dd>
-
-                    <!-- Transport (Editable) -->
+                    }
+                    
+                    <!-- Transport (Derived) -->
                     <dt class="col-sm-3">Transport</dt>
                     <dd class="col-sm-9">
                         <div id="view-Transport" class="d-flex align-items-center">
-                            <span class="me-2">@Model.Student.Transport</span>
-                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
-                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Transport')"></i>
-                            }
-                        </div>
-                        <div id="edit-Transport" style="display:none;">
-                            <div class="d-flex align-items-center">
-                                <input type="text" class="form-control form-control-sm me-2" value="@Model.Student.Transport" />
-                                <button type="button" class="btn btn-sm btn-success me-1" onclick="saveField('@Model.Student.Qid', 'Transport', '?handler=UpdateField')"><i class="fas fa-check"></i></button>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit('Transport')"><i class="fas fa-times"></i></button>
-                            </div>
+                            <span class="me-2">
+                                @(Model.Student.BusNo.HasValue && Model.Student.BusNo > 0 ? "Bus" : "Car")
+                            </span>
                         </div>
                     </dd>
                     
@@ -176,14 +154,13 @@
                         </div>
                     </dd>
 
-                    <!-- Note (Editable) -->
+                    <!-- Note (Restricted) -->
+                     @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
                     <dt class="col-sm-3">Notes</dt>
                     <dd class="col-sm-9">
                         <div id="view-Note" class="d-flex align-items-center">
                             <span class="me-2">@Model.Student.Note</span>
-                            @if(User.IsInRole("Admin") || User.IsInRole("Supervisor")) {
-                                <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Note')"></i>
-                            }
+                            <i class="fas fa-pencil-alt text-primary" style="cursor:pointer;" onclick="enableEdit('Note')"></i>
                         </div>
                         <div id="edit-Note" style="display:none;">
                             <div class="d-flex align-items-center">
@@ -193,6 +170,7 @@
                             </div>
                         </div>
                     </dd>
+                    }
 
                     <!-- OldBranche (Editable) -->
                     <dt class="col-sm-3">Old Branch</dt>

@@ -18,6 +18,9 @@ public partial class TeacherTb
     [StringLength(255)]
     public string? TeachName { get; set; }
 
+    [StringLength(450)]
+    public string? UserId { get; set; }
+
     public int? TeachMobile { get; set; }
 
     [Column("StaffID")]

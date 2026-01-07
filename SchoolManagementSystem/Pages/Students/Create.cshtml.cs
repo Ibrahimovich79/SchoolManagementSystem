@@ -19,6 +19,7 @@ namespace SchoolManagementSystem.Pages.Students
 
         public IActionResult OnGet()
         {
+            ViewData["GradeId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.GradeTables, "GradeId", "GradeName");
             return Page();
         }
 

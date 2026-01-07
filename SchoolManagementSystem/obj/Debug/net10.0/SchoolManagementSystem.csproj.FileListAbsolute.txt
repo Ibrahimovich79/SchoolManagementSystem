@@ -294,6 +294,7 @@ C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\De
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\SchoolManagementSystem.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\SchoolManagementSystem.RazorAssemblyInfo.cache
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\SchoolManagementSystem.RazorAssemblyInfo.cs
+C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\SchoolManagementSystem.sourcelink.json
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
@@ -364,7 +365,7 @@ C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\De
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\yfc7ypekbg-{0}-mlv21k5csn-mlv21k5csn.gz
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\7ipxvjncjg-{0}-b9sayid5wm-b9sayid5wm.gz
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\vxfcqaufhi-{0}-61n19gt1b8-61n19gt1b8.gz
-C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\f8x7lh9nka-{0}-vac66y0o0s-vac66y0o0s.gz
+C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\f8x7lh9nka-{0}-og9kfaeg3j-og9kfaeg3j.gz
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\uoi9i7cmbs-{0}-bqjiyaj88i-bqjiyaj88i.gz
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\itoc1esns8-{0}-c2jlpeoesf-c2jlpeoesf.gz
 C:\Users\ibrah\source\repos\SchoolManagementSystem\SchoolManagementSystem\obj\Debug\net10.0\compressed\87oh71tzd7-{0}-erw9l3u2r3-erw9l3u2r3.gz

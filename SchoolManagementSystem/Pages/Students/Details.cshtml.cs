@@ -34,6 +34,17 @@ namespace SchoolManagementSystem.Pages.Students
             {
                 return NotFound();
             }
+
+            // Server-Side Data Masking
+            if (!User.IsInRole("Admin") && !User.IsInRole("Supervisor"))
+            {
+                Student.StdMobile = null;
+                Student.Mobile2 = null;
+                Student.StdNationality = null;
+                Student.Note = null;
+            }
+            
+            ViewData["GradeId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.GradeTables, "GradeId", "GradeName");
             return Page();
         }
 
@@ -59,11 +70,11 @@ namespace SchoolManagementSystem.Pages.Students
                     case "StdName":
                         studentToUpdate.StdName = fieldValue;
                         break;
-                    case "StdGrade":
-                        studentToUpdate.StdGrade = fieldValue;
-                        break;
-                    case "ClassRoom":
-                        studentToUpdate.ClassRoom = fieldValue;
+                    case "GradeId":
+                        studentToUpdate.GradeId = fieldValue;
+                        // Fetch GradeName for return value
+                         var grade = await _context.GradeTables.FindAsync(fieldValue);
+                         updatedValue = grade?.GradeName ?? fieldValue;
                         break;
                     case "StdMobile":
                         if (int.TryParse(fieldValue, out int mobileValue))
@@ -79,9 +90,6 @@ namespace SchoolManagementSystem.Pages.Students
                         break;
                     case "StdNationality":
                         studentToUpdate.StdNationality = fieldValue;
-                        break;
-                    case "Transport":
-                        studentToUpdate.Transport = fieldValue;
                         break;
                     case "BusNo":
                         if (int.TryParse(fieldValue, out int busNoValue))

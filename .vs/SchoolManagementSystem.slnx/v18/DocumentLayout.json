@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\ibrah\\source\\repos\\SchoolManagementSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{40908EAC-D93B-38AB-C314-485FBF8097C0}|SchoolManagementSystem\\SchoolManagementSystem.csproj|c:\\users\\ibrah\\source\\repos\\schoolmanagementsystem\\schoolmanagementsystem\\schoolmanagementsystem.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{40908EAC-D93B-38AB-C314-485FBF8097C0}|SchoolManagementSystem\\SchoolManagementSystem.csproj|solutionrelative:schoolmanagementsystem\\schoolmanagementsystem.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ibrah\\source\\repos\\SchoolManagementSystem\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "SchoolManagementSystem.csproj",
-              "DocumentMoniker": "C:\\Users\\ibrah\\source\\repos\\SchoolManagementSystem\\SchoolManagementSystem\\SchoolManagementSystem.csproj",
-              "RelativeDocumentMoniker": "SchoolManagementSystem\\SchoolManagementSystem.csproj",
-              "ToolTip": "C:\\Users\\ibrah\\source\\repos\\SchoolManagementSystem\\SchoolManagementSystem\\SchoolManagementSystem.csproj",
-              "RelativeToolTip": "SchoolManagementSystem\\SchoolManagementSystem.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-18T18:58:25.403Z",
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\ibrah\\source\\repos\\SchoolManagementSystem\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "C:\\Users\\ibrah\\source\\repos\\SchoolManagementSystem\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AgIAAEgBAAAAAAAAAADwv1kBAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-19T21:22:30.717Z",
               "EditorCaption": ""
             }
           ]

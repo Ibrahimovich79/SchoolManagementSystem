@@ -10,14 +10,12 @@ namespace SchoolManagementSystem.Models;
 public partial class GradeTable
 {
     [Key]
+    [Column("GradeID")]
     [StringLength(255)]
-    public string Grade { get; set; } = null!;
+    public string GradeId { get; set; } = null!;
 
     [StringLength(255)]
-    public string? ScTeach { get; set; }
-
-    [StringLength(255)]
-    public string? MathTeach { get; set; }
+    public string? GradeName { get; set; }
 
     [InverseProperty("GradeNavigation")]
     public virtual ICollection<Relation> Relations { get; set; } = new List<Relation>();

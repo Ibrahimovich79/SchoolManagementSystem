@@ -27,13 +27,74 @@ namespace SchoolManagementSystem.Pages.Teachers
 
             Teacher = await _context.TeacherTbs
                 .Include(t => t.Cousre)
+                .Include(t => t.Relations)
+                .ThenInclude(r => r.GradeNavigation)
                 .FirstOrDefaultAsync(m => m.TeachId == id);
 
             if (Teacher == null)
             {
                 return NotFound();
             }
+
+            // Populate Grade Dropdown for assignment (exclude already assigned grades if possible, or just show all)
+            // Ideally exclude ones the teacher already has
+            var assignedGradeIds = Teacher.Relations.Where(r => r.GradeId != null).Select(r => r.GradeId).ToList();
+            var availableGrades = await _context.GradeTables.Where(g => !assignedGradeIds.Contains(g.GradeId)).ToListAsync();
+            
+            ViewData["GradeId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(availableGrades, "GradeId", "GradeName");
+            ViewData["CousreId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(await _context.Courses.ToListAsync(), "CourseId", "CourseName");
+
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostAddGradeAsync(long id, string gradeId)
+        {
+            if (!User.IsInRole("Admin") && !User.IsInRole("Supervisor"))
+            {
+                 return Forbid();
+            }
+            
+            // Check if already exists
+            var exists = await _context.Relations.AnyAsync(r => r.TeachId == id && r.GradeId == gradeId);
+            if (!exists)
+            {
+                var relation = new Relation
+                {
+                    TeachId = id,
+                    GradeId = gradeId, 
+                };
+                _context.Relations.Add(relation);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Grade assigned successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Grade already assigned.";
+            }
+            
+            return RedirectToPage(new { id = id });
+        }
+
+         public async Task<IActionResult> OnPostRemoveGradeAsync(long teachId, string gradeId)
+        {
+            if (!User.IsInRole("Admin") && !User.IsInRole("Supervisor"))
+            {
+                 return Forbid();
+            }
+
+            var relation = await _context.Relations.FirstOrDefaultAsync(r => r.TeachId == teachId && r.GradeId == gradeId);
+            if (relation != null)
+            {
+                _context.Relations.Remove(relation);
+                await _context.SaveChangesAsync();
+                 TempData["SuccessMessage"] = "Grade removed successfully.";
+            }
+             else
+            {
+                TempData["ErrorMessage"] = "Assignment not found.";
+            }
+
+            return RedirectToPage(new { id = teachId });
         }
 
         public async Task<IActionResult> OnPostUpdateFieldAsync(long id, string fieldName, string fieldValue)
@@ -59,6 +120,7 @@ namespace SchoolManagementSystem.Pages.Teachers
                         teacherToUpdate.TeachName = fieldValue;
                         break;
                     case "TeachId":
+                        // ... logic existing ...
                         if (long.TryParse(fieldValue, out long newId))
                         {
                             if (newId != id)
@@ -68,8 +130,6 @@ namespace SchoolManagementSystem.Pages.Teachers
                                     return new JsonResult(new { success = false, message = "Teacher ID already exists." });
                                 }
                                 
-                                // Attempt to update Primary Key via Raw SQL to bypass EF tracking restrictions
-                                // Note: This may fail if Foreign Keys exist and Cascade Update is not enabled in DB
                                 try 
                                 {
                                     await _context.Database.ExecuteSqlRawAsync("UPDATE TeacherTb SET TeachID = {0} WHERE TeachID = {1}", newId, id);
@@ -77,7 +137,7 @@ namespace SchoolManagementSystem.Pages.Teachers
                                 }
                                 catch (Exception ex)
                                 {
-                                     return new JsonResult(new { success = false, message = "Could not update ID. Ensure no related records block this change. Error: " + ex.Message });
+                                     return new JsonResult(new { success = false, message = "Could not update ID. Error: " + ex.Message });
                                 }
                             }
                         }
@@ -98,6 +158,8 @@ namespace SchoolManagementSystem.Pages.Teachers
                         if (int.TryParse(fieldValue, out int courseIdValue))
                         {
                             teacherToUpdate.CousreId = courseIdValue;
+                            var course = await _context.Courses.FindAsync(courseIdValue);
+                            updatedValue = course?.CourseName ?? fieldValue;
                         }
                         break;
                      default:

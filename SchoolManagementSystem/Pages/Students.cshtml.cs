@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -23,17 +24,42 @@ namespace SchoolManagementSystem.Pages
         public string GradeSort { get; set; } = default!;
         public string ClassSort { get; set; } = default!;
 
+        public string? CurrentFilter { get; set; }
+        public string? CurrentGradeFilter { get; set; }
+
         public IList<StdTable> Students { get; set; } = default!;
 
-        public async Task OnGetAsync(string sortOrder)
+        public async Task OnGetAsync(string sortOrder, string searchString, string? gradeId)
         {
             CurrentSort = sortOrder;
+            CurrentFilter = searchString;
+            CurrentGradeFilter = gradeId;
+
             IdSort = string.IsNullOrEmpty(sortOrder) ? "id_desc" : "";
             NameSort = sortOrder == "Name" ? "name_desc" : "Name";
             GradeSort = sortOrder == "Grade" ? "grade_desc" : "Grade";
-            ClassSort = sortOrder == "Class" ? "class_desc" : "Class";
+            ClassSort = ""; // Deprecated
 
-            IQueryable<StdTable> query = _context.StdTables;
+            IQueryable<StdTable> query = _context.StdTables.Include(s => s.StdGradeNavigation);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                // Search by Name or ID
+                var isNumeric = long.TryParse(searchString, out long searchId);
+                if (isNumeric)
+                {
+                     query = query.Where(s => s.Qid == searchId || s.StdName.Contains(searchString));
+                }
+                else
+                {
+                    query = query.Where(s => s.StdName.Contains(searchString));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(gradeId))
+            {
+                query = query.Where(s => s.GradeId == gradeId);
+            }
 
             switch (sortOrder)
             {
@@ -47,23 +73,54 @@ namespace SchoolManagementSystem.Pages
                     query = query.OrderByDescending(s => s.StdName);
                     break;
                 case "Grade":
-                    query = query.OrderBy(s => s.StdGrade);
+                    query = query.OrderBy(s => s.StdGradeNavigation != null ? s.StdGradeNavigation.GradeName : string.Empty);
                     break;
                 case "grade_desc":
-                    query = query.OrderByDescending(s => s.StdGrade);
-                    break;
-                case "Class":
-                    query = query.OrderBy(s => s.ClassRoom);
-                    break;
-                case "class_desc":
-                    query = query.OrderByDescending(s => s.ClassRoom);
+                    query = query.OrderByDescending(s => s.StdGradeNavigation != null ? s.StdGradeNavigation.GradeName : string.Empty);
                     break;
                 default:
                     query = query.OrderBy(s => s.Qid);
                     break;
             }
 
+            // Access Control: Teacher sees ONLY students in assigned grades
+            if (!User.IsInRole("Admin") && !User.IsInRole("Supervisor"))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var linkedTeacher = await _context.TeacherTbs
+                    .Include(t => t.Relations)
+                    .FirstOrDefaultAsync(t => t.UserId == userId);
+
+                if (linkedTeacher == null)
+                {
+                    TempData["ErrorMessage"] = "Your account is not linked to a teacher profile. Please contact admin.";
+                    Students = new List<StdTable>();
+                    return; // Stop processing
+                }
+
+                var allowedGrades = linkedTeacher.Relations
+                    .Select(r => r.GradeId)
+                    .Where(g => g != null)
+                    .ToList();
+
+                query = query.Where(s => allowedGrades.Contains(s.GradeId));
+            }
+
             Students = await query.ToListAsync();
+
+             // Server-Side Data Masking for non-Admin/non-Supervisor
+            if (!User.IsInRole("Admin") && !User.IsInRole("Supervisor"))
+            {
+                foreach (var student in Students)
+                {
+                    student.StdMobile = null;
+                    student.Mobile2 = null;
+                    student.StdNationality = null; // Assuming string?
+                    student.Note = null;
+                }
+            }
+            
+            ViewData["GradeList"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.GradeTables, "GradeId", "GradeName");
         }
         public async Task<IActionResult> OnPostDeleteAsync(long id)
         {
