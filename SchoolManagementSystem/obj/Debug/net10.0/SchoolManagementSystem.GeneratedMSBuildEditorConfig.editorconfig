@@ -194,6 +194,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ibrah/source/repos/SchoolManagementSystem/SchoolManagementSystem/Pages/Admin/Attendance/DailyReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQXR0ZW5kYW5jZVxEYWlseVJlcG9ydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ibrah/source/repos/SchoolManagementSystem/SchoolManagementSystem/Pages/Admin/Attendance/DailySummary.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQXR0ZW5kYW5jZVxEYWlseVN1bW1hcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ibrah/source/repos/SchoolManagementSystem/SchoolManagementSystem/Pages/Admin/Attendance/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQXR0ZW5kYW5jZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ibrah/source/repos/SchoolManagementSystem/SchoolManagementSystem/Pages/Admin/DiagnoseRoles.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGlhZ25vc2VSb2xlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

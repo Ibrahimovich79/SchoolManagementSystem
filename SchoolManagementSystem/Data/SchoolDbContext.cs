@@ -23,6 +23,7 @@ namespace SchoolManagementSystem.Data
         public virtual DbSet<ExamAb> ExamAbs { get; set; }
         public virtual DbSet<ExamStd> ExamStds { get; set; }
         public virtual DbSet<LateTable> LateTables { get; set; }
+        public virtual DbSet<StudentAttendance> StudentAttendances { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

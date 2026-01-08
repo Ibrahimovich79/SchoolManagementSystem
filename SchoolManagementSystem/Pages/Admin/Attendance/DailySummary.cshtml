@@ -1,0 +1,100 @@
+@page
+@model SchoolManagementSystem.Pages.Admin.Attendance.DailySummaryModel
+@{
+    ViewData["Title"] = "Daily Summary";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<style>
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+        #printableArea, #printableArea * {
+            visibility: visible;
+        }
+        #printableArea {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4 no-print">Daily Attendance Summary</h1>
+    
+    <div class="card mb-4 no-print">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label class="col-form-label fw-bold">Date:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="date" asp-for="ReportDate" class="form-control" onchange="this.form.submit()" />
+                </div>
+                 <div class="col-auto ms-auto">
+                     <button type="button" class="btn btn-secondary me-2" onclick="window.print()">
+                         <i class="fas fa-print"></i> Print
+                     </button>
+                     <button type="submit" asp-page-handler="Export" class="btn btn-success">
+                         <i class="fas fa-file-excel"></i> Export Excel (CSV)
+                     </button>
+                    <input type="hidden" name="reportDate" value="@Model.ReportDate.ToString("yyyy-MM-dd")" />
+                 </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="printableArea">
+        <div class="text-center mb-4 d-none d-print-block">
+            <h2>School Daily Attendance Report</h2>
+            <h4>Date: @Model.ReportDate.ToShortDateString()</h4>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header no-print">
+                <i class="fas fa-chart-bar me-1"></i>
+                Summary Data
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Class Section</th>
+                            <th class="text-center">Total Students</th>
+                            <th class="text-center text-success">Present</th>
+                            <th class="text-center text-danger">Absent</th>
+                            <th class="text-center">Attendance %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var grade in Model.Summaries)
+                        {
+                            <tr>
+                                <td>@grade.GradeName</td>
+                                <td class="text-center">@grade.TotalStudents</td>
+                                <td class="text-center text-success">@grade.PresentCount</td>
+                                <td class="text-center text-danger">@grade.AbsentCount</td>
+                                <td class="text-center fw-bold">@grade.AttendancePercentage%</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-secondary fw-bold">
+                        <tr>
+                            <td>OVERALL TOTALS</td>
+                            <td class="text-center">@Model.OverallSummary.TotalStudents</td>
+                            <td class="text-center text-success">@Model.OverallSummary.TotalPresent</td>
+                            <td class="text-center text-danger">@Model.OverallSummary.TotalAbsent</td>
+                            <td class="text-center">@Model.OverallSummary.TotalPercentage%</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

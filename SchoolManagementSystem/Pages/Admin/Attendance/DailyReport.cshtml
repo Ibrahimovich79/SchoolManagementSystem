@@ -1,0 +1,71 @@
+@page
+@model SchoolManagementSystem.Pages.Admin.Attendance.DailyReportModel
+@{
+    ViewData["Title"] = "Daily Attendance Report";
+    Layout = "/Pages/Shared/_Layout.cshtml"; // Assuming standard layout
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Daily Attendance Report</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-filter me-1"></i>
+            Filter
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label class="col-form-label fw-bold">Select Date:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="date" asp-for="ReportDate" class="form-control" onchange="this.form.submit()" />
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Refresh</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Attendance Status for @Model.ReportDate.ToShortDateString()
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped" id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Student Name</th>
+                        <th>Student ID</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ReportData)
+                    {
+                        <tr class="@(item.Status == "Absent" ? "table-danger" : "")">
+                            <td>@item.ClassName</td>
+                            <td>@item.StudentName</td>
+                            <td>@item.StudentId</td>
+                            <td>
+                                @if(item.Status == "Absent")
+                                {
+                                    <span class="badge bg-danger">Absent</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Present</span>
+                                }
+                            </td>
+                            <td>@item.Note</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

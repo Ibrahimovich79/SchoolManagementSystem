@@ -14,30 +14,61 @@
             <p class="card-text">Manage your school system here.</p>
 
             <div class="row mt-4">
-                <div class="col-md-4">
-                    <div class="card text-center mb-3">
-                        <div class="card-body">
-                            <h5>Manage Students</h5>
-                            <a href="/Students" class="btn btn-outline-primary">View Students</a>
+                <div class="col-md-3">
+                    <!-- Green Tile: Active Classes -->
+                    <a href="/Admin/Attendance/Index" class="text-decoration-none">
+                        <div class="card bg-success text-white mb-4 h-100">
+                            <div class="card-body">Active Classes</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <span class="small text-white">Manage Attendance</span>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <!-- Red Tile: Attendance (Today) -->
+                    <a href="/Admin/Attendance/DailySummary" class="text-decoration-none">
+                        <div class="card bg-danger text-white mb-4 h-100">
+                            <div class="card-body">Attendance (Today)</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <span class="small text-white">View Summary</span>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Existing Management Tiles -->
+            <div class="row mt-4">
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="col-md-4">
+                        <div class="card text-center mb-3">
+                            <div class="card-body">
+                                <h5>Manage Students</h5>
+                                <a href="/Students" class="btn btn-outline-primary">View Students</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card text-center mb-3">
-                        <div class="card-body">
-                            <h5>Manage Teachers</h5>
-                            <a href="/Teachers" class="btn btn-outline-primary">View Teachers</a>
+                    <div class="col-md-4">
+                        <div class="card text-center mb-3">
+                            <div class="card-body">
+                                <h5>Manage Teachers</h5>
+                                <a href="/Teachers" class="btn btn-outline-primary">View Teachers</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card text-center mb-3">
-                        <div class="card-body">
-                            <h5>Manage Users</h5>
-                            <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary">View Users</a>
+                    <div class="col-md-4">
+                        <div class="card text-center mb-3">
+                            <div class="card-body">
+                                <h5>Manage Users</h5>
+                                <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary">View Users</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>

@@ -1,0 +1,67 @@
+@page
+@model SchoolManagementSystem.Pages.Admin.Attendance.IndexModel
+@{
+    ViewData["Title"] = "Attendance Dashboard";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Attendance Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Attendance Management</li>
+    </ol>
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">Daily Summary</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" asp-page="DailySummary">View Report</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Combined Report</div>
+                 <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" asp-page="DailyReport">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-school me-1"></i>
+            Active Classes
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Class Section</th>
+                        <th>Students</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var grade in Model.Grades)
+                    {
+                        <tr>
+                            <td>@grade.GradeName</td>
+                            <td>@grade.StudentCount</td>
+                            <td>
+                                <a asp-page="/Teachers/ClassDetails" asp-route-gradeId="@grade.GradeId" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-clipboard-check"></i> Manage Attendance
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

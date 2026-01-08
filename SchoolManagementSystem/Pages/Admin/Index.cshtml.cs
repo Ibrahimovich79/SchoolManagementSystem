@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace SchoolManagementSystem.Pages.Admin
 {
     // Ensure only Admins can access (Double verification on top of Program.cs convention)
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Supervisor")]
     public class IndexModel : PageModel
     {
         public void OnGet()
