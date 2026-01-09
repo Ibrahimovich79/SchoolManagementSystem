@@ -2,70 +2,170 @@
 @model SchoolManagementSystem.Pages.Admin.Attendance.DailyReportModel
 @{
     ViewData["Title"] = "Daily Attendance Report";
-    Layout = "/Pages/Shared/_Layout.cshtml"; // Assuming standard layout
+    Layout = "/Pages/Shared/_Layout.cshtml";
 }
 
+<style>
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+        #printableArea, #printableArea * {
+            visibility: visible;
+        }
+        #printableArea {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        .no-print {
+            display: none !important;
+        }
+        .badge {
+            border: 1px solid #000 !important;
+            color: #000 !important;
+            background: #fff !important;
+        }
+    }
+</style>
+
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Daily Attendance Report</h1>
+    <h1 class="mt-4 no-print">Daily Attendance Report</h1>
     
-    <div class="card mb-4">
+    <div class="card mb-4 no-print">
         <div class="card-header">
             <i class="fas fa-filter me-1"></i>
-            Filter
+            Filters
         </div>
         <div class="card-body">
-            <form method="get" class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label class="col-form-label fw-bold">Select Date:</label>
+            <div class="row g-3 align-items-end">
+                <form method="get" class="col-md-8">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Date:</label>
+                            <input type="date" asp-for="ReportDate" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Status:</label>
+                            <select asp-for="StatusFilter" class="form-select">
+                                <option value="">-- All --</option>
+                                <option value="Present">Present Only</option>
+                                <option value="Absent">Absent Only</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Class:</label>
+                            <select asp-for="ClassFilter" asp-items="Model.ClassList" class="form-select">
+                                <option value="">-- All Classes --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Apply
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-secondary w-100" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
                 </div>
-                <div class="col-auto">
-                    <input type="date" asp-for="ReportDate" class="form-control" onchange="this.form.submit()" />
+                <div class="col-md-2">
+                    <form method="post" asp-page-handler="Export">
+                        <input type="hidden" name="reportDate" value="@Model.ReportDate.ToString("yyyy-MM-dd")" />
+                        <input type="hidden" name="statusFilter" value="@Model.StatusFilter" />
+                        <input type="hidden" name="classFilter" value="@Model.ClassFilter" />
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fas fa-file-excel"></i> Export Excel
+                        </button>
+                    </form>
                 </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Refresh</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            Attendance Status for @Model.ReportDate.ToShortDateString()
+    <div id="printableArea">
+        <div class="text-center mb-4 d-none d-print-block">
+            <h2>Daily Attendance Report</h2>
+            <h4>Date: @Model.ReportDate.ToShortDateString()</h4>
+            @if (!string.IsNullOrEmpty(Model.StatusFilter))
+            {
+                <p><strong>Status:</strong> @Model.StatusFilter</p>
+            }
+            @if (!string.IsNullOrEmpty(Model.ClassFilter))
+            {
+                <p><strong>Class:</strong> @Model.ClassFilter</p>
+            }
         </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped" id="datatablesSimple">
-                <thead>
-                    <tr>
-                        <th>Class</th>
-                        <th>Student Name</th>
-                        <th>Student ID</th>
-                        <th>Status</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.ReportData)
-                    {
-                        <tr class="@(item.Status == "Absent" ? "table-danger" : "")">
-                            <td>@item.ClassName</td>
-                            <td>@item.StudentName</td>
-                            <td>@item.StudentId</td>
-                            <td>
-                                @if(item.Status == "Absent")
+
+        <div class="card mb-4">
+            <div class="card-header no-print">
+                <i class="fas fa-table me-1"></i>
+                Attendance Status for @Model.ReportDate.ToShortDateString()
+                <span class="badge bg-secondary ms-2">@Model.ReportData.Count students</span>
+            </div>
+            <div class="card-body">
+                @if (Model.ReportData.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Student Name</th>
+                                    <th>Student ID</th>
+                                    <th>Status</th>
+                                    <th>SMS</th>
+                                    <th>Mobile</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ReportData)
                                 {
-                                    <span class="badge bg-danger">Absent</span>
+                                    <tr class="@(item.Status == "Absent" ? "table-danger" : "")">
+                                        <td>@item.ClassName</td>
+                                        <td>@item.StudentName</td>
+                                        <td>@item.StudentId</td>
+                                        <td>
+                                            @if(item.Status == "Absent")
+                                            {
+                                                <span class="badge bg-danger">Absent</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">Present</span>
+                                            }
+                                        </td>
+                                        <td>@item.SMS</td>
+                                        <td>@item.Mobile</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.StudentNote))
+                                            {
+                                                <span class="text-info" title="Student Note">@item.StudentNote</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.AttendanceNote))
+                                            {
+                                                @if (!string.IsNullOrEmpty(item.StudentNote))
+                                                {
+                                                    <br />
+                                                }
+                                                <span class="text-warning" title="Attendance Note"><i class="fas fa-clock"></i> @item.AttendanceNote</span>
+                                            }
+                                        </td>
+                                    </tr>
                                 }
-                                else
-                                {
-                                    <span class="badge bg-success">Present</span>
-                                }
-                            </td>
-                            <td>@item.Note</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">No records found for the selected filters.</div>
+                }
+            </div>
         </div>
     </div>
 </div>

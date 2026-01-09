@@ -79,7 +79,12 @@ namespace SchoolManagementSystem.Pages
                     query = query.OrderByDescending(s => s.StdGradeNavigation != null ? s.StdGradeNavigation.GradeName : string.Empty);
                     break;
                 default:
-                    query = query.OrderBy(s => s.Qid);
+                    // Default: Sort by Class (Home Students and المنازل last), then by Name alphabetically
+                    query = query
+                        .OrderBy(s => s.StdGradeNavigation != null && s.StdGradeNavigation.GradeName != null && 
+                            (s.StdGradeNavigation.GradeName.Contains("Home") || s.StdGradeNavigation.GradeName.Contains("المنازل")) ? 1 : 0)
+                        .ThenBy(s => s.StdGradeNavigation != null ? s.StdGradeNavigation.GradeName : string.Empty)
+                        .ThenBy(s => s.StdName);
                     break;
             }
 

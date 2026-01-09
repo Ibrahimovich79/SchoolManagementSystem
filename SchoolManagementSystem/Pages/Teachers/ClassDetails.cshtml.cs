@@ -102,7 +102,7 @@ namespace SchoolManagementSystem.Pages.Teachers
                 BusNo = s.BusNo,
                 Note = s.Note,
                 IsAbsent = absenceRecords.Contains(s.Qid)
-            }).ToList();
+            }).OrderBy(s => s.Name).ToList();
 
             return Page();
         }
