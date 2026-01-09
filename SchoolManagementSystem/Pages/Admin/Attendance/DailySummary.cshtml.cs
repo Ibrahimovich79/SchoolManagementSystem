@@ -50,8 +50,9 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
         {
             if (ReportDate == default) ReportDate = DateTime.Today;
 
-            // Get Grades and Students
+            // Get Grades and Students (Exclude Home-Schooled)
             var grades = await _context.GradeTables
+                .Where(g => !g.GradeName.Contains("المنازل") && !g.GradeName.Contains("Home"))
                 .Include(g => g.StdTables)
                 .ToListAsync();
 
@@ -94,11 +95,13 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
         {
             var date = reportDate == default ? DateTime.Today : reportDate;
             
-            // Get detailed absent list
+            // Get detailed absent list (Exclude Home-Schooled)
             var absences = await _context.StudentAttendances
                 .Include(a => a.Student)
                 .Include(a => a.Class)
-                .Where(a => a.AttendanceDate.Date == date.Date)
+                .Where(a => a.AttendanceDate.Date == date.Date && 
+                            !a.Class.GradeName.Contains("المنازل") && 
+                            !a.Class.GradeName.Contains("Home"))
                 .Select(a => new
                 {
                     Section = a.Class.GradeName ?? a.ClassId,

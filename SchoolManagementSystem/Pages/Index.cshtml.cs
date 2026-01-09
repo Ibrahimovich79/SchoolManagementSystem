@@ -57,8 +57,9 @@ namespace SchoolManagementSystem.Pages
                     // Get classes assigned via Relation table
                     var assignedGrades = teacher.Relations
                         .Where(r => r.GradeId != null)
-                        .Select(r => r.GradeNavigation) // Assuming GradeId is FK to GradeTable
+                        .Select(r => r.GradeNavigation)
                         .Distinct()
+                        .OrderBy(g => g.GradeName)
                         .ToList();
 
                     foreach (var grade in assignedGrades)

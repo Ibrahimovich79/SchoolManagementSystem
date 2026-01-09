@@ -119,7 +119,7 @@ namespace SchoolManagementSystem.Pages.Teachers
             {
                 if (AttendanceDate.Date != DateTime.Today)
                 {
-                    ModelState.AddModelError("", "Teachers can only mark attendance for today.");
+                    ModelState.AddModelError("", "يسمح للمعلم بتسجيل الحضور لليوم فقط.");
                     return await OnGetAsync();
                 }
             }
@@ -127,13 +127,27 @@ namespace SchoolManagementSystem.Pages.Teachers
             // Get Teacher ID
             var teacher = await _context.TeacherTbs.FirstOrDefaultAsync(t => t.UserId == user.Id);
             
-            long teacherId = teacher?.TeachId ?? 0;
-            
-            if (teacherId == 0 && !User.IsInRole("Admin") && !User.IsInRole("Supervisor")) 
+            if (teacher == null)
             {
-                 ModelState.AddModelError("", "Teacher record not found.");
-                 return await OnGetAsync();
+                if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
+                {
+                    // Create a placeholder teacher record for Admin/Supervisor if missing
+                    teacher = new TeacherTb
+                    {
+                        UserId = user.Id,
+                        TeachName = user.Email?.Split('@')[0] ?? "Administrator"
+                    };
+                    _context.TeacherTbs.Add(teacher);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    ModelState.AddModelError("", "لم يتم العثور على سجل للمعلم.");
+                    return await OnGetAsync();
+                }
             }
+            
+            long teacherId = teacher.TeachId;
 
             // Fetch existing attendance for this day/class
             // Note: We use unique constraint on StudentId+Date, but here we scope by ClassId too just in case 
@@ -172,7 +186,7 @@ namespace SchoolManagementSystem.Pages.Teachers
 
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Attendance has been saved successfully.";
+            TempData["SuccessMessage"] = "تم حفظ كشف الحضور بنجاح.";
 
             // Redirect to get logic to refresh clean state
             return RedirectToPage(new { gradeId = GradeId, attendanceDate = AttendanceDate.ToString("yyyy-MM-dd") });

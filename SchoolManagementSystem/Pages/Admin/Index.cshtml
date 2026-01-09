@@ -1,27 +1,27 @@
 ﻿@page
 @model SchoolManagementSystem.Pages.Admin.IndexModel
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "لوحة تحكم المسؤول";
 }
 
 <div class="container mt-4">
     <div class="card border-primary">
         <div class="card-header bg-primary text-white">
-            <h3><i class="bi bi-speedometer2"></i> Admin Dashboard</h3>
+            <h3><i class="bi bi-speedometer2"></i> لوحة تحكم المسؤول</h3>
         </div>
         <div class="card-body">
-            <h5 class="card-title">Welcome, Admin!</h5>
-            <p class="card-text">Manage your school system here.</p>
+            <h5 class="card-title">مرحباً بك أيها المسؤول!</h5>
+            <p class="card-text">إدارة نظام المدرسة من هنا.</p>
 
             <div class="row mt-4">
                 <div class="col-md-3">
                     <!-- Green Tile: Active Classes -->
                     <a href="/Admin/Attendance/Index" class="text-decoration-none">
                         <div class="card bg-success text-white mb-4 h-100">
-                            <div class="card-body">Active Classes</div>
+                            <div class="card-body">الصفوف النشطة</div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <span class="small text-white">Manage Attendance</span>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <span class="small text-white">إدارة الحضور</span>
+                                <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                             </div>
                         </div>
                     </a>
@@ -30,10 +30,10 @@
                     <!-- Red Tile: Attendance (Today) -->
                     <a href="/Admin/Attendance/DailySummary" class="text-decoration-none">
                         <div class="card bg-danger text-white mb-4 h-100">
-                            <div class="card-body">Attendance (Today)</div>
+                            <div class="card-body">الحضور (اليوم)</div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <span class="small text-white">View Summary</span>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <span class="small text-white">عرض الملخص</span>
+                                <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                             </div>
                         </div>
                     </a>
@@ -47,24 +47,24 @@
                     <div class="col-md-4">
                         <div class="card text-center mb-3">
                             <div class="card-body">
-                                <h5>Manage Students</h5>
-                                <a href="/Students" class="btn btn-outline-primary">View Students</a>
+                                <h5>إدارة الطلاب</h5>
+                                <a href="/Students" class="btn btn-outline-primary">عرض الطلاب</a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card text-center mb-3">
                             <div class="card-body">
-                                <h5>Manage Teachers</h5>
-                                <a href="/Teachers" class="btn btn-outline-primary">View Teachers</a>
+                                <h5>إدارة المعلمين</h5>
+                                <a href="/Teachers" class="btn btn-outline-primary">عرض المعلمين</a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card text-center mb-3">
                             <div class="card-body">
-                                <h5>Manage Users</h5>
-                                <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary">View Users</a>
+                                <h5>إدارة المستخدمين</h5>
+                                <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary">عرض المستخدمين</a>
                             </div>
                         </div>
                     </div>

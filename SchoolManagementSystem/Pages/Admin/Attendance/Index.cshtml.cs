@@ -32,6 +32,7 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
         public async Task OnGetAsync()
         {
             Grades = await _context.GradeTables
+                .Where(g => !g.GradeName.Contains("المنازل") && !g.GradeName.Contains("Home"))
                 .Select(g => new GradeViewModel
                 {
                     GradeId = g.GradeId,

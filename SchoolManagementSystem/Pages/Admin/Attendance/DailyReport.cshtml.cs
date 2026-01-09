@@ -45,6 +45,7 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
             public string AttendanceNote { get; set; } // From StudentAttendance.Note
             public string SMS { get; set; } // From StdTable.Sms or StdMobile
             public string Mobile { get; set; } // From StdTable.StdMobile
+            public string LastActionBy { get; set; } // Teacher/Supervisor name + time
         }
 
         public async Task OnGetAsync()
@@ -56,12 +57,15 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
         {
             if (ReportDate == default) ReportDate = DateTime.Today;
 
-            // Load class list for dropdown
-            ClassList = new SelectList(await _context.GradeTables.OrderBy(g => g.GradeName).ToListAsync(), "GradeId", "GradeName");
+            // Load class list for dropdown (Exclude Home-Schooled)
+            ClassList = new SelectList(await _context.GradeTables
+                .Where(g => !g.GradeName.Contains("المنازل") && !g.GradeName.Contains("Home"))
+                .OrderBy(g => g.GradeName).ToListAsync(), "GradeId", "GradeName");
 
-            // 1. Get all students with their class info
+            // 1. Get all students with their class info (Exclude Home-Schooled)
             var studentsQuery = _context.StdTables
                 .Include(s => s.StdGradeNavigation)
+                .Where(s => !s.StdGradeNavigation.GradeName.Contains("المنازل") && !s.StdGradeNavigation.GradeName.Contains("Home"))
                 .AsQueryable();
 
             // Apply class filter
@@ -85,6 +89,7 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
 
             // 2. Get attendance records for the selected date
             var attendanceRecords = await _context.StudentAttendances
+                .Include(a => a.Teacher)
                 .Where(a => a.AttendanceDate.Date == ReportDate.Date)
                 .ToDictionaryAsync(a => a.StudentId);
 
@@ -104,7 +109,8 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
                     StudentNote = s.StudentNote, // Student's permanent note
                     AttendanceNote = attRecord?.Note, // Attendance-specific note
                     SMS = s.SMS?.ToString(),
-                    Mobile = s.Mobile?.ToString()
+                    Mobile = s.Mobile?.ToString(),
+                    LastActionBy = attRecord != null ? $"{attRecord.Teacher?.TeachName ?? "N/A"} ({attRecord.CreatedAt.ToLocalTime():hh:mm tt})" : "N/A"
                 };
             });
 
@@ -137,9 +143,10 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
             worksheet.Cell(1, 6).Value = "Mobile";
             worksheet.Cell(1, 7).Value = "Student Note";
             worksheet.Cell(1, 8).Value = "Attendance Note";
+            worksheet.Cell(1, 9).Value = "Last Action By / Supervisor's Name";
 
             // Style header
-            var headerRange = worksheet.Range(1, 1, 1, 8);
+            var headerRange = worksheet.Range(1, 1, 1, 9);
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
 
@@ -155,11 +162,12 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
                 worksheet.Cell(row, 6).Value = item.Mobile;
                 worksheet.Cell(row, 7).Value = item.StudentNote;
                 worksheet.Cell(row, 8).Value = item.AttendanceNote;
+                worksheet.Cell(row, 9).Value = item.LastActionBy;
 
                 // Highlight absent students
                 if (item.Status == "Absent")
                 {
-                    worksheet.Range(row, 1, row, 8).Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightPink;
+                    worksheet.Range(row, 1, row, 9).Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightPink;
                 }
                 row++;
             }
