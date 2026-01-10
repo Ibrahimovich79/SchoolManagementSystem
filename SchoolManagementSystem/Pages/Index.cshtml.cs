@@ -29,6 +29,20 @@ namespace SchoolManagementSystem.Pages
         public bool IsTeacher { get; set; }
         public List<ClassViewModel> TeacherClasses { get; set; } = new();
 
+        public async Task<IActionResult> OnPostSendReportAsync([FromServices] SchoolManagementSystem.Services.IAttendanceReportService reportService)
+        {
+            try
+            {
+                await reportService.SendDailyReportAsync();
+                TempData["ReportMessage"] = "تم إرسال تقرير الغياب بنجاح إلى الإدارة.";
+            }
+            catch (System.Exception ex)
+            {
+                TempData["ReportError"] = "حدث خطأ أثناء إرسال التقرير: " + ex.Message;
+            }
+            return RedirectToPage();
+        }
+
         public class ClassViewModel
         {
             public string GradeId { get; set; }

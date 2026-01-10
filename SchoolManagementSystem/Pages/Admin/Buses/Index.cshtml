@@ -1,0 +1,321 @@
+@page
+@model SchoolManagementSystem.Pages.Admin.Buses.IndexModel
+@{
+    ViewData["Title"] = "إدارة الحافلات (الباصات)";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <nav aria-label="breadcrumb" class="mt-4 no-print">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index" class="text-decoration-none">لوحة التحكم</a></li>
+            <li class="breadcrumb-item active" aria-current="page">إدارة الحافلات</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center mb-3 no-print">
+        <a asp-page="/Index" class="btn btn-outline-secondary ms-2" title="العودة للرئيسية">
+            <i class="fas fa-home"></i>
+        </a>
+        <h1 class="mb-0">إدارة قوائم الحافلات</h1>
+    </div>
+
+    <div class="card mb-4 no-print shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">تصفية حسب رقم الحافلة:</label>
+                    <select asp-for="BusFilter" asp-items="Model.BusList" class="form-select">
+                        <option value="">-- جميع الحافلات --</option>
+                        <option value="-1">طلاب السيارات (بدون باص)</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter ms-1"></i> تصفية
+                    </button>
+                </div>
+                <div class="col-md-auto ms-auto">
+                    <button type="button" class="btn btn-secondary ms-2" onclick="triggerPrint()">
+                        <i class="fas fa-print ms-1"></i> طباعة التقرير
+                    </button>
+                    <form method="post" asp-page-handler="Export" class="d-inline">
+                        <input type="hidden" name="busFilter" value="@Model.BusFilter" />
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-excel ms-1"></i> تصدير Excel
+                        </button>
+                    </form>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="printableArea">
+        <!-- Official Header (Print only) -->
+        <div class="d-none d-print-block mb-3">
+            <div class="row align-items-start gx-0 border-bottom pb-2">
+                <div class="col-4 text-start">
+                    <img src="/images/qatar-logo.png" alt="Qatar MOE Logo" style="height: 65px; object-fit: contain; margin-top: -10px; margin-right: -10px;">
+                    <div style="margin-top: 2px;">
+                        <span class="small fw-bold">العام الأكاديمي:</span>
+                        <span class="small fw-bold">2025-2026</span>
+                    </div>
+                </div>
+                <div class="col-4 text-center" style="margin-top: 5px;">
+                    <h5 class="fw-bold mb-0 text-nowrap" style="font-size: 1.2rem; overflow: hidden;">مدرسة معيذر الابتدائية للبنين</h5>
+                    <div class="fw-bold text-nowrap" style="font-size: 1rem; overflow: hidden; margin-top: -2px;">كشف حضور وانصراف طلاب الحافلات</div>
+                </div>
+                <div class="col-4 text-end" style="margin-top: 25px;">
+                    <div class="small fw-bold">التاريخ: @DateTime.Now.ToString("yyyy/MM/dd")</div>
+                </div>
+            </div>
+            
+            <div class="row mt-2 px-2">
+                <div class="col-12 text-start">
+                    <div class="h4 fw-bold mb-0">رقم الحافلة: @(Model.BusFilter > 0 ? Model.BusFilter.ToString() : (Model.BusFilter == -1 ? "طلاب السيارات" : "جميع الحافلات"))</div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.BusFilter.HasValue && Model.BusFilter > 0)
+        {
+            <div class="row mb-3 gx-2 d-print-flex">
+                <div class="col-4">
+                    <div class="border p-2 text-center h-100">
+                        <label class="small text-muted d-block">مشرف الحافلة</label>
+                        <span class="fw-bold">@Model.BusSupervisor</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="border p-2 text-center h-100">
+                        <label class="small text-muted d-block">جوال المشرف</label>
+                        <span class="fw-bold">@Model.BusSupervisorMobile</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="border p-2 text-center h-100 text-truncate">
+                        <label class="small text-muted d-block">عنوان المنطقة</label>
+                        <span class="fw-bold" title="@Model.BusAddress">@Model.BusAddress</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center no-print">
+                <span><i class="fas fa-list-ol ms-1"></i> قائمة الطلاب (@Model.Students.Count)</span>
+                <span class="small badge bg-light text-primary">سجل الحضور الأسبوعي</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm mb-0 compact-report">
+                        <thead class="bg-light text-dark text-center">
+                            <!-- Days Row (Print only) -->
+                            <tr class="d-none d-print-table-row">
+                                <th rowspan="2" class="align-middle" style="width: 35px;">م</th>
+                                <th rowspan="2" class="align-middle">اسم الطالب</th>
+                                <th colspan="2">الأحد</th>
+                                <th colspan="2">الاثنين</th>
+                                <th colspan="2">الثلاثاء</th>
+                                <th colspan="2" style="width: 50px;">الأربعاء</th>
+                                <th colspan="2" style="width: 50px;">الخميس</th>
+                                <th rowspan="2" class="align-middle">الصف</th>
+                                <th rowspan="2" class="align-middle">الجوال</th>
+                            </tr>
+                            <tr class="d-none d-print-table-row">
+                                <th class="attendance-slot">ص</th><th class="attendance-slot">م</th>
+                                <th class="attendance-slot">ص</th><th class="attendance-slot">م</th>
+                                <th class="attendance-slot">ص</th><th class="attendance-slot">م</th>
+                                <th class="attendance-slot">ص</th><th class="attendance-slot">م</th>
+                                <th class="attendance-slot">ص</th><th class="attendance-slot">م</th>
+                            </tr>
+                            <!-- Standard Header (Screen only) -->
+                            <tr class="no-print">
+                                <th style="width: 35px">م</th>
+                                <th style="width: 120px">تعديل الباص</th>
+                                <th>اسم الطالب</th>
+                                <th style="width: 150px">الصف</th>
+                                <th style="width: 150px">الجوال</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Students.Count; i++)
+                            {
+                                var student = Model.Students[i];
+                                <tr class="text-center align-middle">
+                                    <td>@(i + 1)</td>
+                                    <td class="no-print">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <select class="form-select form-select-sm bus-selector mx-auto" 
+                                                    data-student-id="@student.Qid"
+                                                    style="width: 85px;">
+                                                <option value="">سيارة</option>
+                                                @foreach (var bus in Model.BusList)
+                                                {
+                                                    <option value="@bus.Value" selected="@(student.BusNo?.ToString() == bus.Value)">
+                                                        @bus.Text
+                                                    </option>
+                                                }
+                                            </select>
+                                            <div class="status-container">
+                                                <span class="bus-status-icon text-success d-none mt-1"><i class="fas fa-check-circle"></i></span>
+                                                <div class="bus-status-spinner spinner-border spinner-border-sm text-primary d-none mt-1"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right px-2 fw-bold text-nowrap">@student.StdName</td>
+                                    
+                                    <!-- Attendance Slots (Print Only) -->
+                                    <td class="d-none d-print-table-cell attendance-slot"></td><td class="d-none d-print-table-cell attendance-slot"></td>
+                                    <td class="d-none d-print-table-cell attendance-slot"></td><td class="d-none d-print-table-cell attendance-slot"></td>
+                                    <td class="d-none d-print-table-cell attendance-slot"></td><td class="d-none d-print-table-cell attendance-slot"></td>
+                                    <td class="d-none d-print-table-cell attendance-slot"></td><td class="d-none d-print-table-cell attendance-slot"></td>
+                                    <td class="d-none d-print-table-cell attendance-slot"></td><td class="d-none d-print-table-cell attendance-slot"></td>
+                                    
+                                    <td>@student.StdGradeNavigation?.GradeName</td>
+                                    <td>@student.StdMobile</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Signatures (Print Only) -->
+        <div class="d-none d-print-block mt-5">
+            <div class="row text-center px-5 fw-bold">
+                <div class="col-4 border-top pt-2 border-dark">مشرف الحافلة</div>
+                <div class="col-4"></div>
+                <div class="col-4 border-top pt-2 border-dark">منسق شؤون الطلاب</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function triggerPrint() {
+            const oldTitle = document.title;
+            document.title = " "; 
+            window.print();
+            document.title = oldTitle;
+        }
+
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('print') === 'true') {
+                triggerPrint();
+            }
+
+            $('.bus-selector').on('change', function () {
+                const $select = $(this);
+                const studentId = $select.data('student-id');
+                const newBusNo = $select.val();
+                const $row = $select.closest('tr');
+                const $spinner = $row.find('.bus-status-spinner');
+                const $success = $row.find('.bus-status-icon');
+
+                $success.addClass('d-none');
+                $spinner.removeClass('d-none');
+                $select.prop('disabled', true);
+
+                $.ajax({
+                    url: '?handler=UpdateBus',
+                    method: 'POST',
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    data: {
+                        studentId: studentId,
+                        newBusNo: newBusNo
+                    },
+                    success: function (response) {
+                        $spinner.addClass('d-none');
+                        $select.prop('disabled', false);
+                        if (response.success) {
+                            $success.removeClass('d-none');
+                            setTimeout(() => {
+                                $success.addClass('d-none');
+                            }, 2000);
+                        } else {
+                            alert('خطأ: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        $spinner.addClass('d-none');
+                        $select.prop('disabled', false);
+                        alert('حدث خطأ أثناء التحديث.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+@Html.AntiForgeryToken()
+<style>
+    .compact-report td, .compact-report th {
+        padding: 2px !important;
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+    
+    .attendance-slot {
+        width: 30px !important;
+        min-width: 30px !important;
+        text-align: center;
+        background-color: #f8f9fa;
+    }
+
+    .line-height-1 { line-height: 1; }
+
+    @@media print {
+        @@page { 
+            margin: 0; 
+            size: A4 portrait;
+        }
+        body { 
+            padding: 0; 
+            margin: 0;
+            visibility: hidden; 
+            font-size: 10pt;
+            -webkit-print-color-adjust: exact;
+        }
+        #printableArea, #printableArea * { visibility: visible; }
+        #printableArea { 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            padding: 0.5cm;
+        }
+        .no-print { display: none !important; }
+        .card { border: none !important; }
+        .table-responsive { overflow: visible !important; width: 100% !important; }
+        .table { 
+            border: 2px solid black !important; 
+            width: 100% !important; 
+            margin: 0 !important;
+            table-layout: auto !important;
+        }
+        .table th, .table td { 
+            border: 1px solid black !important; 
+            color: black !important; 
+            padding: 4px 2px !important;
+            font-size: 9.5pt !important;
+        }
+        .text-nowrap { white-space: nowrap !important; }
+        .bg-primary { background-color: transparent !important; color: black !important; }
+        .container-fluid { padding: 0 !important; max-width: 100% !important; }
+        
+        /* Strict Column Proportions for Print */
+        .table th:nth-child(1), .table td:nth-child(1) { width: 25px !important; text-align: center; } /* م */
+        .table th:nth-child(2), .table td:nth-child(2) { width: auto !important; text-align: right; } /* اسم الطالب */
+        .attendance-slot { width: 22px !important; min-width: 22px !important; max-width: 22px !important; padding: 0 !important; }
+        .table th:nth-last-child(2), .table td:nth-last-child(2) { width: 60px !important; } /* الصف */
+        .table th:last-child, .table td:last-child { width: 90px !important; } /* الجوال */
+
+        h1, h2, h4, h5, p { color: black !important; margin-bottom: 1px !important; }
+    }
+</style>

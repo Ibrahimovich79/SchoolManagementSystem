@@ -32,20 +32,20 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
         public string? ClassFilter { get; set; } // GradeId or null for All
 
         public List<DailyReportItem> ReportData { get; set; } = new();
-        public SelectList ClassList { get; set; }
+        public SelectList ClassList { get; set; } = default!;
 
         public class DailyReportItem
         {
             public long StudentId { get; set; }
-            public string StudentName { get; set; }
-            public string ClassName { get; set; }
-            public string ClassId { get; set; }
-            public string Status { get; set; }
-            public string StudentNote { get; set; } // From StdTable.Note
-            public string AttendanceNote { get; set; } // From StudentAttendance.Note
-            public string SMS { get; set; } // From StdTable.Sms or StdMobile
-            public string Mobile { get; set; } // From StdTable.StdMobile
-            public string LastActionBy { get; set; } // Teacher/Supervisor name + time
+            public string StudentName { get; set; } = string.Empty;
+            public string ClassName { get; set; } = string.Empty;
+            public string ClassId { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
+            public string StudentNote { get; set; } = string.Empty;
+            public string AttendanceNote { get; set; } = string.Empty;
+            public string SMS { get; set; } = string.Empty;
+            public string Mobile { get; set; } = string.Empty;
+            public string LastActionBy { get; set; } = string.Empty;
         }
 
         public async Task OnGetAsync()
@@ -107,10 +107,10 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
                     ClassName = s.ClassName,
                     Status = isAbsent ? "Absent" : "Present",
                     StudentNote = s.StudentNote, // Student's permanent note
-                    AttendanceNote = attRecord?.Note, // Attendance-specific note
-                    SMS = s.SMS?.ToString(),
-                    Mobile = s.Mobile?.ToString(),
-                    LastActionBy = attRecord != null ? $"{attRecord.Teacher?.TeachName ?? "N/A"} ({attRecord.CreatedAt.ToLocalTime():hh:mm tt})" : "N/A"
+                    AttendanceNote = attRecord?.Note ?? string.Empty,
+                    SMS = s.SMS?.ToString() ?? string.Empty,
+                    Mobile = s.Mobile?.ToString() ?? string.Empty,
+                    LastActionBy = attRecord != null ? $"{(attRecord.Teacher?.TeachName ?? "N/A")} ({attRecord.CreatedAt.ToLocalTime():hh:mm tt})" : "N/A"
                 };
             });
 
@@ -135,15 +135,15 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
             var worksheet = workbook.Worksheets.Add("Attendance Report");
 
             // Header row
-            worksheet.Cell(1, 1).Value = "Class";
-            worksheet.Cell(1, 2).Value = "Student Name";
-            worksheet.Cell(1, 3).Value = "Student ID";
-            worksheet.Cell(1, 4).Value = "Status";
+            worksheet.Cell(1, 1).Value = "الصف";
+            worksheet.Cell(1, 2).Value = "اسم الطالب";
+            worksheet.Cell(1, 3).Value = "الرقم الشخصي";
+            worksheet.Cell(1, 4).Value = "الحالة";
             worksheet.Cell(1, 5).Value = "SMS";
-            worksheet.Cell(1, 6).Value = "Mobile";
-            worksheet.Cell(1, 7).Value = "Student Note";
-            worksheet.Cell(1, 8).Value = "Attendance Note";
-            worksheet.Cell(1, 9).Value = "Last Action By / Supervisor's Name";
+            worksheet.Cell(1, 6).Value = "الجوال";
+            worksheet.Cell(1, 7).Value = "ملاحظات الطالب";
+            worksheet.Cell(1, 8).Value = "ملاحظات الحضور";
+            worksheet.Cell(1, 9).Value = "آخر إجراء بواسطة / اسم المشرف";
 
             // Style header
             var headerRange = worksheet.Range(1, 1, 1, 9);
@@ -157,7 +157,7 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
                 worksheet.Cell(row, 1).Value = item.ClassName;
                 worksheet.Cell(row, 2).Value = item.StudentName;
                 worksheet.Cell(row, 3).Value = item.StudentId;
-                worksheet.Cell(row, 4).Value = item.Status;
+                worksheet.Cell(row, 4).Value = item.Status == "Absent" ? "غائب" : "حاضر";
                 worksheet.Cell(row, 5).Value = item.SMS;
                 worksheet.Cell(row, 6).Value = item.Mobile;
                 worksheet.Cell(row, 7).Value = item.StudentNote;

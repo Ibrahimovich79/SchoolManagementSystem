@@ -24,8 +24,8 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
 
         public class GradeViewModel
         {
-            public string GradeId { get; set; }
-            public string GradeName { get; set; }
+            public string GradeId { get; set; } = string.Empty;
+            public string GradeName { get; set; } = string.Empty;
             public int StudentCount { get; set; }
         }
 

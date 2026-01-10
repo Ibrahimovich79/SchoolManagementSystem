@@ -5,13 +5,10 @@
 }
 
 <div class="container-fluid px-4">
-    <div class="text-center">
+    <div class="text-center mt-4">
         <h1 class="display-4">مرحباً</h1>
-        <p>مرحباً بكم في نظام مدرسة معيذر الابتدائية للبنين.</p>
+        <p class="lead">مرحباً بكم في نظام مدرسة معيذر الابتدائية للبنين.</p>
     </div>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">الصفحة الرئيسية</li>
-    </ol>
 
     <div class="row">
         @if (Model.IsTeacher)
@@ -21,14 +18,14 @@
                 @foreach (var classItem in Model.TeacherClasses)
                 {
                     <div class="col-xl-3 col-md-6">
-                        <div class="card bg-primary text-white mb-4">
+                        <div class="card bg-primary text-white mb-4 shadow-sm h-100">
                             <div class="card-body">
                                 <h5>@classItem.GradeName</h5>
-                                <div class="small">@classItem.StudentCount Students</div>
+                                <div class="small">عدد الطلاب: @classItem.StudentCount</div>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a class="small text-white stretched-link" asp-page="/Teachers/ClassDetails" asp-route-gradeId="@classItem.GradeId">View Student List</a>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <a class="small text-white stretched-link text-decoration-none" asp-page="/Teachers/ClassDetails" asp-route-gradeId="@classItem.GradeId">كشف الطلاب</a>
+                                <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                             </div>
                         </div>
                     </div>
@@ -37,8 +34,8 @@
             else
             {
                 <div class="col-12">
-                    <div class="alert alert-info">
-                        You have no assigned classes at the moment.
+                    <div class="alert alert-info shadow-sm">
+                        لا يوجد صفوف مسندة إليك حالياً.
                     </div>
                 </div>
             }
@@ -47,55 +44,104 @@
         {
             <!-- Admin / Supervisor View -->
             <div class="col-xl-3 col-md-6">
-                <div class="card bg-primary text-white mb-4">
-                    <div class="card-body">Total Students</div>
+                <div class="card bg-primary text-white mb-4 shadow-sm h-100">
+                    <div class="card-body">
+                        <div>إجمالي الطلاب</div>
+                        <div class="h3 mb-0">@Model.StartStudentCount</div>
+                    </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <span class="h3">@Model.StartStudentCount</span>
-                        <a class="small text-white stretched-link" asp-page="/Students">View Details</a>
+                        <a class="small text-white stretched-link text-decoration-none" asp-page="/Students">عرض التفاصيل</a>
+                        <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6">
-                <div class="card bg-warning text-white mb-4">
-                    <div class="card-body">Total Teachers</div>
+                <div class="card bg-warning text-white mb-4 shadow-sm h-100">
+                    <div class="card-body">
+                        <div>إجمالي المعلمين</div>
+                        <div class="h3 mb-0">@Model.TeacherCount</div>
+                    </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <span class="h3">@Model.TeacherCount</span>
-                        <a class="small text-white stretched-link" asp-page="/Teachers">View Details</a>
+                        <a class="small text-white stretched-link text-decoration-none" asp-page="/Teachers">عرض التفاصيل</a>
+                        <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6">
                 <a href="/Admin/Attendance/Index" class="text-decoration-none">
-                    <div class="card bg-success text-white mb-4">
-                        <div class="card-body">Active Classes</div>
+                    <div class="card bg-success text-white mb-4 shadow-sm h-100">
+                        <div class="card-body">
+                            <div>الصفوف النشطة</div>
+                            <div class="h3 mb-0">@Model.ClassCount</div>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
-                            <span class="h3">@Model.ClassCount</span>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            <span class="small text-white">إدارة الغياب اليومي</span>
+                            <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                         </div>
                     </div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6">
                 <a href="/Admin/Attendance/DailySummary" class="text-decoration-none">
-                    <div class="card bg-danger text-white mb-4">
-                        <div class="card-body">Attendance (Today)</div>
+                    <div class="card bg-danger text-white mb-4 shadow-sm h-100">
+                        <div class="card-body">
+                            <div>حضور وغياب اليوم</div>
+                            <div class="h3 mb-0">ملخص اليوم</div>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
-                            <span class="h3">View</span>
-                            <div class="small text-white">Summary</div>
+                            <span class="small text-white">عرض الإحصائيات</span>
+                            <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                         </div>
                     </div>
                 </a>
             </div>
-            @if (User.IsInRole("Admin"))
-            {
-                <div class="col-xl-3 col-md-6">
-                    <div class="card bg-info text-white mb-4">
-                        <div class="card-body">User Management</div>
+                <div class="col-xl-3 col-md-6 mt-2">
+                    <div class="card bg-info text-white mb-4 shadow-sm h-100">
+                        <div class="card-body">
+                            <div>إدارة المستخدمين</div>
+                            <div class="small">إدارة صلاحيات النظام</div>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
-                            <span class="small text-white">Manage System Users</span>
-                            <a class="small text-white stretched-link" asp-page="/Admin/Users/Index">View Details</a>
+                            <a class="small text-white stretched-link text-decoration-none" asp-page="/Admin/Users/Index">عرض التفاصيل</a>
+                            <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                         </div>
                     </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mt-2">
+                    <div class="card bg-info text-white mb-4 shadow-sm h-100">
+                        <div class="card-body">
+                            <div>إدارة الحافلات (الباصات)</div>
+                            <div class="small">توزيع الطلاب على الحافلات</div>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <a class="small text-white stretched-link text-decoration-none" asp-page="/Admin/Buses/Index">إدارة الحافلات</a>
+                            <div class="small text-white"><i class="fas fa-bus"></i></div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
+            {
+                <div class="col-12 mt-4 text-center">
+                    <hr />
+                    <form method="post" asp-page-handler="SendReport">
+                        <button type="submit" class="btn btn-lg btn-warning text-white shadow-sm px-5">
+                            <i class="fas fa-paper-plane me-2"></i> إرسال تقرير الغياب اليومي الآن للإدارة
+                        </button>
+                    </form>
+                    @if (TempData["ReportMessage"] != null)
+                    {
+                        <div class="alert alert-success mt-3 shadow-sm mx-auto" style="max-width: 500px;">
+                            <i class="fas fa-check-circle me-2"></i> @TempData["ReportMessage"]
+                        </div>
+                    }
+                    @if (TempData["ReportError"] != null)
+                    {
+                        <div class="alert alert-danger mt-3 shadow-sm mx-auto" style="max-width: 500px;">
+                            <i class="fas fa-exclamation-triangle me-2"></i> @TempData["ReportError"]
+                        </div>
+                    }
                 </div>
             }
         }

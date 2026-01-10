@@ -16,20 +16,20 @@ namespace SchoolManagementSystem.Models
         public long StudentId { get; set; }
 
         [ForeignKey("StudentId")]
-        public virtual StdTable Student { get; set; }
+        public virtual StdTable Student { get; set; } = default!;
 
         [Required]
         [StringLength(255)]
-        public string ClassId { get; set; } // Matches GradeId type in GradeTable
+        public string ClassId { get; set; } = default!;
 
         [ForeignKey("ClassId")]
-        public virtual GradeTable Class { get; set; }
+        public virtual GradeTable Class { get; set; } = default!;
 
         [Required]
         public long TeacherId { get; set; }
 
         [ForeignKey("TeacherId")]
-        public virtual TeacherTb Teacher { get; set; }
+        public virtual TeacherTb Teacher { get; set; } = default!;
 
         [Required]
         public DateTime AttendanceDate { get; set; }

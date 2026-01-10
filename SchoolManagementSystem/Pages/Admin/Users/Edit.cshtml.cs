@@ -29,13 +29,13 @@ namespace SchoolManagementSystem.Pages.Admin.Users
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         public class InputModel
         {
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty;
 
             public List<string> SelectedRoles { get; set; } = new();
 
@@ -61,10 +61,10 @@ namespace SchoolManagementSystem.Pages.Admin.Users
             if (user == null) return NotFound();
 
             UserId = user.Id;
-            Input.Email = user.Email;
+            Input.Email = user.Email ?? string.Empty;
 
             // Get all roles
-            AllRoles = _roleManager.Roles.Select(r => r.Name).ToList();
+            AllRoles = _roleManager.Roles.Select(r => r.Name!).ToList();
 
             // Get user roles
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -97,7 +97,7 @@ namespace SchoolManagementSystem.Pages.Admin.Users
             if (user == null) return NotFound();
 
             UserId = user.Id;
-            AllRoles = _roleManager.Roles.Select(r => r.Name).ToList();
+            AllRoles = _roleManager.Roles.Select(r => r.Name!).ToList();
 
             if (!ModelState.IsValid)
             {

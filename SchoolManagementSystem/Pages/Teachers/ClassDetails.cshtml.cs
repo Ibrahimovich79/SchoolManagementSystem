@@ -24,10 +24,10 @@ namespace SchoolManagementSystem.Pages.Teachers
             _userManager = userManager;
         }
 
-        public string ClassName { get; set; }
+        public string ClassName { get; set; } = string.Empty;
         
         [BindProperty(SupportsGet = true)]
-        public string GradeId { get; set; }
+        public string GradeId { get; set; } = string.Empty;
 
         [BindProperty(SupportsGet = true)]
         public DateTime AttendanceDate { get; set; } = DateTime.Today;
@@ -40,11 +40,11 @@ namespace SchoolManagementSystem.Pages.Teachers
         public class StudentViewModel
         {
             public long StudentId { get; set; } // Personal Number (QID)
-            public string Name { get; set; }
+            public string Name { get; set; } = string.Empty;
             public int StudentCode { get; set; }
-            public string TransportType { get; set; }
+            public string TransportType { get; set; } = string.Empty;
             public int? BusNo { get; set; }
-            public string Note { get; set; }
+            public string Note { get; set; } = string.Empty;
             public bool IsAbsent { get; set; }
         }
 
@@ -131,9 +131,13 @@ namespace SchoolManagementSystem.Pages.Teachers
             {
                 if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
                 {
+                    // Calculate next TeachId (in case it's not an Identity column)
+                    long nextId = (await _context.TeacherTbs.Select(t => (long?)t.TeachId).MaxAsync() ?? 0) + 1;
+
                     // Create a placeholder teacher record for Admin/Supervisor if missing
                     teacher = new TeacherTb
                     {
+                        TeachId = nextId,
                         UserId = user.Id,
                         TeachName = user.Email?.Split('@')[0] ?? "Administrator"
                     };
@@ -184,8 +188,29 @@ namespace SchoolManagementSystem.Pages.Teachers
                 _context.StudentAttendances.RemoveRange(recordsToDelete);
             }
 
-            await _context.SaveChangesAsync();
+            // Record the submission
+            var submission = await _context.AttendanceSubmissions
+                .FirstOrDefaultAsync(s => s.ClassId == GradeId && s.AttendanceDate == AttendanceDate.Date);
 
+            if (submission == null)
+            {
+                submission = new AttendanceSubmission
+                {
+                    ClassId = GradeId,
+                    AttendanceDate = AttendanceDate.Date,
+                    TeacherId = teacher.TeachId,
+                    SubmittedAt = DateTime.Now
+                };
+                _context.AttendanceSubmissions.Add(submission);
+            }
+            else
+            {
+                submission.SubmittedAt = DateTime.Now;
+                submission.TeacherId = teacher.TeachId;
+                _context.AttendanceSubmissions.Update(submission);
+            }
+
+            await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "تم حفظ كشف الحضور بنجاح.";
 
             // Redirect to get logic to refresh clean state

@@ -30,8 +30,8 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
 
         public class ClassSummaryViewModel
         {
-            public string GradeId { get; set; }
-            public string GradeName { get; set; }
+            public string GradeId { get; set; } = string.Empty;
+            public string GradeName { get; set; } = string.Empty;
             public int TotalStudents { get; set; }
             public int PresentCount { get; set; }
             public int AbsentCount { get; set; }
@@ -100,12 +100,14 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
                 .Include(a => a.Student)
                 .Include(a => a.Class)
                 .Where(a => a.AttendanceDate.Date == date.Date && 
+                            a.Class != null &&
+                            a.Class.GradeName != null &&
                             !a.Class.GradeName.Contains("المنازل") && 
                             !a.Class.GradeName.Contains("Home"))
                 .Select(a => new
                 {
-                    Section = a.Class.GradeName ?? a.ClassId,
-                    StudentName = a.Student.StdName,
+                    Section = (a.Class != null ? a.Class.GradeName : null) ?? a.ClassId,
+                    StudentName = a.Student != null ? a.Student.StdName : "",
                     Notes = a.Note ?? ""
                 })
                 .OrderBy(a => a.Section)
@@ -126,10 +128,10 @@ namespace SchoolManagementSystem.Pages.Admin.Attendance
             return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", $"Attendance_Report_{date:yyyy-MM-dd}.csv");
         }
 
-        private string EscapeCsv(string field)
+        private string EscapeCsv(string? field)
         {
             if (string.IsNullOrEmpty(field)) return "";
-            if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
+            if (field.Contains(',') || field.Contains('\"') || field.Contains('\n'))
             {
                 return $"\"{field.Replace("\"", "\"\"")}\"";
             }

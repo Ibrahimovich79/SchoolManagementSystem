@@ -21,14 +21,14 @@ namespace SchoolManagementSystem.Pages.Admin.Users
 
         public class UserWithRoles
         {
-            public string Id { get; set; } = default!;
-            public string Email { get; set; } = default!;
-            public IList<string> Roles { get; set; } = default!;
+            public string Id { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public IList<string> Roles { get; set; } = new List<string>();
         }
 
-        public List<UserWithRoles> UsersWithRoles { get; set; } = default!;
+        public List<UserWithRoles> UsersWithRoles { get; set; } = new();
 
-        public string CurrentUserId { get; set; }
+        public string CurrentUserId { get; set; } = string.Empty;
 
         public async Task OnGetAsync()
         {
@@ -41,9 +41,9 @@ namespace SchoolManagementSystem.Pages.Admin.Users
                 var roles = await _userManager.GetRolesAsync(user);
                 UsersWithRoles.Add(new UserWithRoles
                 {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Roles = roles
+                Id = user.Id,
+                Email = user.Email ?? string.Empty,
+                Roles = roles
                 });
             }
         }
@@ -51,7 +51,7 @@ namespace SchoolManagementSystem.Pages.Admin.Users
         public async Task<IActionResult> OnPostDeleteAsync(string id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser.Id == id)
+            if (currentUser != null && currentUser.Id == id)
             {
                 TempData["ErrorMessage"] = "You cannot delete your own account.";
                 return RedirectToPage();

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
+using SchoolManagementSystem.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
 .AddEntityFrameworkStores<SchoolDbContext>()
 .AddDefaultUI()
 .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<AttendanceReportService>();
+builder.Services.AddSingleton<IAttendanceReportService>(sp => sp.GetRequiredService<AttendanceReportService>());
+builder.Services.AddHostedService(sp => sp.GetRequiredService<AttendanceReportService>());
 
 builder.Services.AddRazorPages(options =>
 {

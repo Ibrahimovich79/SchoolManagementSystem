@@ -6,28 +6,45 @@
 }
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Attendance Dashboard</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-        <li class="breadcrumb-item active">Attendance Management</li>
-    </ol>
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index" class="text-decoration-none">لوحة التحكم</a></li>
+            <li class="breadcrumb-item active" aria-current="page">إدارة الغياب</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center mb-3">
+        <a asp-page="/Index" class="btn btn-outline-secondary ms-2" title="العودة للرئيسية">
+            <i class="fas fa-home"></i>
+        </a>
+        <h1 class="mb-0">لوحة تحكم الغياب</h1>
+    </div>
 
     <div class="row">
         <div class="col-xl-3 col-md-6">
             <div class="card bg-info text-white mb-4">
-                <div class="card-body">Attendance Management</div>
+                <div class="card-body">إدارة الغياب والحضور</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#active-classes">Manage Now</a>
+                    <a class="small text-white stretched-link text-decoration-none" href="#active-classes">انتقل للأسفل</a>
                     <div class="small text-white"><i class="fas fa-angle-double-down"></i></div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">Combined Report</div>
+        <div class="col-xl-3 col-md-4">
+            <div class="card bg-success text-white mb-4 shadow-sm">
+                <div class="card-body">ملخص الغياب اليومي</div>
                  <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" asp-page="DailyReport">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    <a class="small text-white stretched-link text-decoration-none" asp-page="DailySummary">عرض الملخص</a>
+                    <div class="small text-white"><i class="fas fa-angle-left"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-4">
+            <div class="card bg-primary text-white mb-4 shadow-sm">
+                <div class="card-body">تقارير الحضور المفصلة</div>
+                 <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link text-decoration-none" asp-page="DailyReport">تصدير تقارير (Excel/PDF)</a>
+                    <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                 </div>
             </div>
         </div>
@@ -35,33 +52,35 @@
 
     <div class="card mb-4" id="active-classes">
         <div class="card-header">
-            <i class="fas fa-school me-1"></i>
-            Active Classes
+            <i class="fas fa-school ms-1"></i>
+            الصفوف الدراسية النشطة
         </div>
         <div class="card-body">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Class Section</th>
-                        <th>Students</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var grade in Model.Grades)
-                    {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
                         <tr>
-                            <td>@grade.GradeName</td>
-                            <td>@grade.StudentCount</td>
-                            <td>
-                                <a asp-page="/Teachers/ClassDetails" asp-route-gradeId="@grade.GradeId" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-clipboard-check"></i> Manage Attendance
-                                </a>
-                            </td>
+                            <th>اسم الصف</th>
+                            <th>عدد الطلاب</th>
+                            <th>الإجراءات</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var grade in Model.Grades)
+                        {
+                            <tr>
+                                <td>@grade.GradeName</td>
+                                <td>@grade.StudentCount</td>
+                                <td>
+                                    <a asp-page="/Teachers/ClassDetails" asp-route-gradeId="@grade.GradeId" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-clipboard-check ms-1"></i> إدارة الغياب
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

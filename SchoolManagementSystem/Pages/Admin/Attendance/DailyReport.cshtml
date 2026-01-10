@@ -1,7 +1,7 @@
 @page
 @model SchoolManagementSystem.Pages.Admin.Attendance.DailyReportModel
 @{
-    ViewData["Title"] = "Daily Attendance Report";
+    ViewData["Title"] = "تقرير الحضور والغياب اليومي";
     Layout = "/Pages/Shared/_Layout.cshtml";
 }
 
@@ -31,45 +31,58 @@
 </style>
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 no-print">Daily Attendance Report</h1>
+    <nav aria-label="breadcrumb" class="mt-4 no-print">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index" class="text-decoration-none">لوحة التحكم</a></li>
+            <li class="breadcrumb-item"><a asp-page="/Admin/Attendance/Index" class="text-decoration-none">إدارة الغياب</a></li>
+            <li class="breadcrumb-item active" aria-current="page">تقرير مفصل</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center mb-3 no-print">
+        <a asp-page="/Admin/Attendance/Index" class="btn btn-outline-secondary ms-2" title="العودة لصفحة الغياب">
+            <i class="fas fa-home"></i>
+        </a>
+        <h1 class="mb-0">تقرير الحضور والغياب المفصل</h1>
+    </div>
     
-    <div class="card mb-4 no-print">
+    <div class="card mb-4 no-print shadow-sm">
         <div class="card-header">
-            <i class="fas fa-filter me-1"></i>
-            Filters
+            <i class="fas fa-filter ms-1"></i>
+            فلاتر البحث
         </div>
         <div class="card-body">
             <div class="row g-3 align-items-end">
                 <form method="get" class="col-md-8">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Date:</label>
+                            <label class="form-label fw-bold">التاريخ:</label>
                             <input type="date" asp-for="ReportDate" class="form-control" />
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Status:</label>
+                            <label class="form-label fw-bold">الحالة:</label>
                             <select asp-for="StatusFilter" class="form-select">
-                                <option value="">-- All --</option>
-                                <option value="Present">Present Only</option>
-                                <option value="Absent">Absent Only</option>
+                                <option value="">-- الكل --</option>
+                                <option value="Present">حاضر فقط</option>
+                                <option value="Absent">غائب فقط</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold">Class:</label>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">الصف:</label>
                             <select asp-for="ClassFilter" asp-items="Model.ClassList" class="form-select">
-                                <option value="">-- All Classes --</option>
+                                <option value="">-- جميع الصفوف --</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-search"></i> Apply
+                                <i class="fas fa-search ms-1"></i> بحث
                             </button>
                         </div>
                     </div>
                 </form>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-secondary w-100" onclick="window.print()">
-                        <i class="fas fa-print"></i> Print
+                        <i class="fas fa-print ms-1"></i> طباعة
                     </button>
                 </div>
                 <div class="col-md-2">
@@ -78,7 +91,7 @@
                         <input type="hidden" name="statusFilter" value="@Model.StatusFilter" />
                         <input type="hidden" name="classFilter" value="@Model.ClassFilter" />
                         <button type="submit" class="btn btn-success w-100">
-                            <i class="fas fa-file-excel"></i> Export Excel
+                            <i class="fas fa-file-excel ms-1"></i> تصدير (Excel)
                         </button>
                     </form>
                 </div>
@@ -88,23 +101,23 @@
 
     <div id="printableArea">
         <div class="text-center mb-4 d-none d-print-block">
-            <h2>Daily Attendance Report</h2>
-            <h4>Date: @Model.ReportDate.ToShortDateString()</h4>
+            <h2>تقرير حضور وغياب الطلاب اليومي</h2>
+            <h4>التاريخ: @Model.ReportDate.ToString("yyyy/MM/dd")</h4>
             @if (!string.IsNullOrEmpty(Model.StatusFilter))
             {
-                <p><strong>Status:</strong> @Model.StatusFilter</p>
+                <p><strong>الحالة:</strong> @(Model.StatusFilter == "Absent" ? "غائب" : "حاضر")</p>
             }
             @if (!string.IsNullOrEmpty(Model.ClassFilter))
             {
-                <p><strong>Class:</strong> @Model.ClassFilter</p>
+                <p><strong>الصف:</strong> @Model.ClassFilter</p>
             }
         </div>
 
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <div class="card-header no-print">
-                <i class="fas fa-table me-1"></i>
-                Attendance Status for @Model.ReportDate.ToShortDateString()
-                <span class="badge bg-secondary ms-2">@Model.ReportData.Count students</span>
+                <i class="fas fa-table ms-1"></i>
+                بيانات الحضور ليوم @Model.ReportDate.ToString("yyyy/MM/dd")
+                <span class="badge bg-secondary ms-2">@Model.ReportData.Count طالب</span>
             </div>
             <div class="card-body">
                 @if (Model.ReportData.Any())
@@ -113,36 +126,36 @@
                         <table class="table table-bordered table-striped">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>Class</th>
-                                    <th>Student Name</th>
-                                    <th>Student ID</th>
-                                    <th>Status</th>
-                                    <th>SMS</th>
-                                    <th>Mobile</th>
-                                    <th>Note</th>
-                                    <th>Last Action By</th>
+                                    <th class="text-right">الصف</th>
+                                    <th class="text-right">اسم الطالب</th>
+                                    <th class="text-right">الرقم الشخصي</th>
+                                    <th class="text-center">الحالة</th>
+                                    <th class="text-center">SMS</th>
+                                    <th class="text-right">الجوال</th>
+                                    <th class="text-right">ملاحظات</th>
+                                    <th class="text-right">بواسطة</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model.ReportData)
                                 {
                                     <tr class="@(item.Status == "Absent" ? "table-danger" : "")">
-                                        <td>@item.ClassName</td>
-                                        <td>@item.StudentName</td>
-                                        <td>@item.StudentId</td>
-                                        <td>
+                                        <td class="text-right">@item.ClassName</td>
+                                        <td class="text-right">@item.StudentName</td>
+                                        <td class="text-right">@item.StudentId</td>
+                                        <td class="text-center">
                                             @if(item.Status == "Absent")
                                             {
-                                                <span class="badge bg-danger">Absent</span>
+                                                <span class="badge bg-danger">غائب</span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-success">Present</span>
+                                                <span class="badge bg-success">حاضر</span>
                                             }
                                         </td>
-                                        <td>@item.SMS</td>
-                                        <td>@item.Mobile</td>
-                                        <td>
+                                        <td class="text-center">@item.SMS</td>
+                                        <td class="text-right">@item.Mobile</td>
+                                        <td class="text-right">
                                             @if (!string.IsNullOrEmpty(item.StudentNote))
                                             {
                                                 <span class="text-info" title="Student Note">@item.StudentNote</span>
@@ -153,10 +166,10 @@
                                                 {
                                                     <br />
                                                 }
-                                                <span class="text-warning" title="Attendance Note"><i class="fas fa-clock"></i> @item.AttendanceNote</span>
+                                                <span class="text-warning small" title="Attendance Note"><i class="fas fa-clock ms-1"></i> @item.AttendanceNote</span>
                                             }
                                         </td>
-                                        <td>@item.LastActionBy</td>
+                                        <td class="text-right small">@item.LastActionBy</td>
                                     </tr>
                                 }
                             </tbody>
@@ -165,7 +178,7 @@
                 }
                 else
                 {
-                    <div class="alert alert-info">No records found for the selected filters.</div>
+                    <div class="alert alert-info">لم يتم العثور على سجلات تطابق الفلتر المختار.</div>
                 }
             </div>
         </div>

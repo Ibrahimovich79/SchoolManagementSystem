@@ -17,10 +17,13 @@
                 <div class="col-md-3">
                     <!-- Green Tile: Active Classes -->
                     <a href="/Admin/Attendance/Index" class="text-decoration-none">
-                        <div class="card bg-success text-white mb-4 h-100">
-                            <div class="card-body">الصفوف النشطة</div>
+                        <div class="card bg-success text-white mb-4 h-100 shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-0">@Model.ClassCount</h4>
+                                <div>الصفوف النشطة</div>
+                            </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <span class="small text-white">إدارة الحضور</span>
+                                <span class="small text-white">إدارة الغياب اليومي</span>
                                 <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                             </div>
                         </div>
@@ -29,14 +32,35 @@
                 <div class="col-md-3">
                     <!-- Red Tile: Attendance (Today) -->
                     <a href="/Admin/Attendance/DailySummary" class="text-decoration-none">
-                        <div class="card bg-danger text-white mb-4 h-100">
-                            <div class="card-body">الحضور (اليوم)</div>
+                        <div class="card bg-danger text-white mb-4 h-100 shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-0">حضور وغياب اليوم</h4>
+                                <div>عرض الملخص</div>
+                            </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <span class="small text-white">عرض الملخص</span>
+                                <span class="small text-white">إحصائيات اليوم</span>
                                 <div class="small text-white"><i class="fas fa-angle-left"></i></div>
                             </div>
                         </div>
                     </a>
+                </div>
+                <div class="col-md-3">
+                    <!-- Blue Tile: Total Students -->
+                    <div class="card bg-primary text-white mb-4 h-100 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="mb-0">@Model.StartStudentCount</h4>
+                            <div>إجمالي الطلاب</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <!-- Info Tile: Total Teachers -->
+                    <div class="card bg-info text-white mb-4 h-100 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="mb-0">@Model.TeacherCount</h4>
+                            <div>إجمالي المعلمين</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -68,7 +92,51 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <a asp-page="/Admin/Buses/Index" class="card text-center mb-3 bg-info text-white text-decoration-none shadow-sm h-100">
+                            <div class="card-body">
+                                <i class="fas fa-bus fa-2x mb-2"></i>
+                                <h5>إدارة الحافلات</h5>
+                                <p class="small mb-0">قوائم الباصات</p>
+                            </div>
+                        </a>
+                    </div>
                 }
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <form method="post" asp-page-handler="SendReport">
+                        <button type="submit" class="btn btn-lg btn-warning text-white shadow-sm px-4">
+                            <i class="fas fa-paper-plane me-2"></i> إرسال التقرير الآن (للإدارة)
+                        </button>
+                    </form>
+                    @if (TempData["ReportMessage"] != null)
+                    {
+                        <div class="alert alert-success mt-3 shadow-sm">
+                            <i class="fas fa-check-circle me-2"></i> @TempData["ReportMessage"]
+                        </div>
+                    }
+                    @if (TempData["ReportError"] != null)
+                    {
+                        <div class="alert alert-danger mt-3 shadow-sm">
+                            <i class="fas fa-exclamation-triangle me-2"></i> @TempData["ReportError"]
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card shadow-sm border-0 bg-light">
+                        <div class="card-body text-center">
+                            <h5 class="text-secondary mb-3">إدارة إضافية</h5>
+                            <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary mb-2">
+                                <i class="fas fa-users-cog me-1"></i> إدارة المستخدمين والصلاحيات
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

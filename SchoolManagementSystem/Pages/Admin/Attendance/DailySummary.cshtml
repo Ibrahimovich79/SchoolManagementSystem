@@ -26,24 +26,40 @@
 </style>
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 no-print">Daily Attendance Summary</h1>
+    <nav aria-label="breadcrumb" class="mt-4 no-print">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index" class="text-decoration-none">لوحة التحكم</a></li>
+            <li class="breadcrumb-item"><a asp-page="/Admin/Attendance/Index" class="text-decoration-none">إدارة الغياب</a></li>
+            <li class="breadcrumb-item active" aria-current="page">ملخص الغياب اليومي</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center mb-3 no-print">
+        <a asp-page="/Admin/Attendance/Index" class="btn btn-outline-secondary ms-2" title="العودة لصفحة الغياب">
+            <i class="fas fa-home"></i>
+        </a>
+        <h1 class="mb-0">ملخص الغياب اليومي</h1>
+    </div>
     
-    <div class="card mb-4 no-print">
+    <div class="card mb-4 no-print shadow-sm">
         <div class="card-body">
             <form method="get" class="row g-3 align-items-center">
                 <div class="col-auto">
-                    <label class="col-form-label fw-bold">Date:</label>
+                    <label class="col-form-label fw-bold">التاريخ:</label>
                 </div>
                 <div class="col-auto">
                     <input type="date" asp-for="ReportDate" class="form-control" onchange="this.form.submit()" />
                 </div>
-                 <div class="col-auto ms-auto">
-                     <button type="button" class="btn btn-secondary me-2" onclick="window.print()">
-                         <i class="fas fa-print"></i> Print
+                 <div class="col-auto me-auto">
+                     <button type="button" class="btn btn-secondary ms-2" onclick="window.print()">
+                         <i class="fas fa-print ms-1"></i> طباعة
                      </button>
-                     <button type="submit" asp-page-handler="Export" class="btn btn-success">
-                         <i class="fas fa-file-excel"></i> Export Excel (CSV)
+                     <button type="submit" asp-page-handler="Export" class="btn btn-success ms-2">
+                         <i class="fas fa-file-excel ms-1"></i> تصدير (CSV)
                      </button>
+                     <a asp-page="DailyReport" class="btn btn-outline-primary">
+                         <i class="fas fa-file-invoice ms-1"></i> تقرير مفصل
+                     </a>
                     <input type="hidden" name="reportDate" value="@Model.ReportDate.ToString("yyyy-MM-dd")" />
                  </div>
             </form>
@@ -52,48 +68,50 @@
 
     <div id="printableArea">
         <div class="text-center mb-4 d-none d-print-block">
-            <h2>School Daily Attendance Report</h2>
-            <h4>Date: @Model.ReportDate.ToShortDateString()</h4>
+            <h2>تقرير غياب طلاب المدرسة</h2>
+            <h4>التاريخ: @Model.ReportDate.ToString("yyyy/MM/dd")</h4>
         </div>
 
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <div class="card-header no-print">
-                <i class="fas fa-chart-bar me-1"></i>
-                Summary Data
+                <i class="fas fa-chart-bar ms-1"></i>
+                بيانات إحصائية
             </div>
             <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Class Section</th>
-                            <th class="text-center">Total Students</th>
-                            <th class="text-center text-success">Present</th>
-                            <th class="text-center text-danger">Absent</th>
-                            <th class="text-center">Attendance %</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var grade in Model.Summaries)
-                        {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-primary">
                             <tr>
-                                <td>@grade.GradeName</td>
-                                <td class="text-center">@grade.TotalStudents</td>
-                                <td class="text-center text-success">@grade.PresentCount</td>
-                                <td class="text-center text-danger">@grade.AbsentCount</td>
-                                <td class="text-center fw-bold">@grade.AttendancePercentage%</td>
+                                <th>اسم الصف</th>
+                                <th class="text-center">إجمالي الطلاب</th>
+                                <th class="text-center text-success">حضور</th>
+                                <th class="text-center text-danger">غياب</th>
+                                <th class="text-center">نسبة الحضور %</th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot class="table-secondary fw-bold">
-                        <tr>
-                            <td>OVERALL TOTALS</td>
-                            <td class="text-center">@Model.OverallSummary.TotalStudents</td>
-                            <td class="text-center text-success">@Model.OverallSummary.TotalPresent</td>
-                            <td class="text-center text-danger">@Model.OverallSummary.TotalAbsent</td>
-                            <td class="text-center">@Model.OverallSummary.TotalPercentage%</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var grade in Model.Summaries)
+                            {
+                                <tr>
+                                    <td>@grade.GradeName</td>
+                                    <td class="text-center">@grade.TotalStudents</td>
+                                    <td class="text-center text-secondary">@grade.PresentCount</td>
+                                    <td class="text-center text-danger fw-bold">@grade.AbsentCount</td>
+                                    <td class="text-center">@grade.AttendancePercentage%</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light fw-bold text-dark">
+                            <tr>
+                                <td>المجموع الكلي</td>
+                                <td class="text-center">@Model.OverallSummary.TotalStudents</td>
+                                <td class="text-center">@Model.OverallSummary.TotalPresent</td>
+                                <td class="text-center text-danger">@Model.OverallSummary.TotalAbsent</td>
+                                <td class="text-center">@Model.OverallSummary.TotalPercentage%</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
